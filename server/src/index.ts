@@ -37,5 +37,3 @@ io.on("disconnection", (socket) => {
 httpServer.listen(PORT, () => {
   console.log("http server on port 3000");
 });
-
-// console.log("hello from harold");
