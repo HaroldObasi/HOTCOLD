@@ -1,8 +1,8 @@
-Welcome to the HOTCOLD repo, to get started clone the repo, and install the required dependencies for the client and server subfolders
+Welcome to the HOTCOLD repo, to get started fork, then clone the repo, and install the required dependencies for the client and server subfolders
 
 ```bash
 node version: 18.16.1
-git clone https://github.com/HaroldObasi/HOTCOLD.git
+git clone "YOUR FORKED URL"
 
 cd server
 npm install
