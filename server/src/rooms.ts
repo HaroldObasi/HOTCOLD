@@ -1,3 +1,5 @@
+import {v4 as uuidv4} from "uuid";
+
 export type Member = {
   id: string;
   userName: string;
@@ -10,10 +12,11 @@ export type Room = {
 
 export class Rooms {
   static rooms: Array<Room> = [
-    { id: "1", members: [] },
-    { id: "2", members: [] },
-    { id: "3", members: [] },
+    {id: "b88c5e73-1501-452b-bd82-ce380ec137ad", members: []},
+    {id: "cd51e87c-6985-4b1d-9936-770b8f4ce185", members: []},
+    {id: "0ab84221-5908-4b24-b8c8-1fc4c5402b2d", members: []}
   ];
+  static ROOM_MAX_LENGTH: number = 5;
 
   static addRoom(room: Room) {
     Rooms.rooms.push(room);
@@ -22,13 +25,17 @@ export class Rooms {
   /**
    * Adds a member into the first free room (room with less than 5 members)
    */
-  static addMember(member: Member): undefined | Room {
+  static addMember(member: Member): Room {
     const freeRoomIndex = Rooms.rooms.findIndex(
-      (room) => room.members.length < 5
+      (room) => room.members.length < Rooms.ROOM_MAX_LENGTH
     );
+
+    // Creates new room if there is no free room
     if (freeRoomIndex === -1) {
-      console.log("There is no free room");
-      return;
+      const newRoom: Room = {id: uuidv4(), members: [member]};
+      Rooms.addRoom(newRoom);
+      console.log(Rooms.rooms);
+      return newRoom;
     }
 
     const prevRoom = Rooms.rooms[freeRoomIndex];
@@ -38,7 +45,7 @@ export class Rooms {
     return prevRoom;
   }
 
-  static removeMember(memberId) {
+  static removeMember(memberId: string) {
     let foundRoomId: Room | undefined;
     const updatedRooms = Rooms.rooms.map((item) => ({
       ...item,
@@ -48,7 +55,7 @@ export class Rooms {
           return false;
         }
         return true;
-      }),
+      })
     }));
 
     Rooms.rooms = updatedRooms;
