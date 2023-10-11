@@ -1,47 +1,47 @@
-import { useState, useEffect } from "react";
+//import { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
-import { socket } from "./socket";
+//import { socket } from "./socket";
 
-type Message = {
-  message: string;
-};
+// type Message = {
+//   message: string;
+// };
 
 function App() {
-  const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
-  const [text, setText] = useState<string>("");
-  const [messages, setMessages] = useState<Array<string>>([]);
+  // const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
+  // const [text, setText] = useState<string>("");
+  // const [messages, setMessages] = useState<Array<string>>([]);
 
-  const handleClick = () => {
-    socket.emit("new_message", {
-      message: text,
-    });
-    setText("");
-  };
+  // const handleClick = () => {
+  //   socket.emit("new_message", {
+  //     message: text,
+  //   });
+  //   setText("");
+  // };
 
-  useEffect(() => {
-    function onConnect() {
-      setIsConnected(true);
-    }
+  // useEffect(() => {
+  //   function onConnect() {
+  //     setIsConnected(true);
+  //   }
 
-    function onDisconnect() {
-      setIsConnected(false);
-    }
+  //   function onDisconnect() {
+  //     setIsConnected(false);
+  //   }
 
-    function onMessageRecieved(data: Message) {
-      setMessages((previous) => [...previous, data.message]);
-    }
+  //   function onMessageRecieved(data: Message) {
+  //     setMessages((previous) => [...previous, data.message]);
+  //   }
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("recieve_message", onMessageRecieved);
+  //   socket.on("connect", onConnect);
+  //   socket.on("disconnect", onDisconnect);
+  //   socket.on("recieve_message", onMessageRecieved);
 
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("recieve_message", onMessageRecieved);
-    };
-  }, []);
+  //   return () => {
+  //     socket.off("connect", onConnect);
+  //     socket.off("disconnect", onDisconnect);
+  //     socket.off("recieve_message", onMessageRecieved);
+  //   };
+  // }, []);
 
   return (
     <main>

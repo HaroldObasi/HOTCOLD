@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Footer = () => {
   
   const devsList: string[] = ["Developer A", "Developer B", "Developer C", "Developer D", "Developer E", "Developer F"];

@@ -26,12 +26,12 @@ const LandingPage = () => {
             </StyledButton>
         </div>
         <div className="py-12"/>
-        <div className="flex flex-col justify-center max-w-5xl mx-auto px-6">
+        <div className="flex flex-col justify-center max-w-6xl mx-auto px-6">
             <div className="grid grid-cols-1 gap-y-12 md:grid-cols-2 md:gap-x-24 ">
                 <div className="text-white drop-shadow-[3px_6px_4px_rgba(0,0,0,0.5)]">
                     <h3 className="pb-6 text-4xl lg:text-5xl xl:text-6xl font-bold">How to play?</h3>
                     <div className="text-l lg:text-2xl xl:text-2xl">
-                        <p className="leading-relaxed">Browse open rooms below, once you find one click "join"</p>
+                        <p className="leading-relaxed">Browse open rooms below, once you find one click "join".</p>
                         <p className="pt-6 leading-relaxed">Then simply enter a name you'd like to go by and click "play".</p>
                         <p className="pt-6 leading-relaxed">Win rounds by guessing the word before everyone else!</p>
                     </div>
