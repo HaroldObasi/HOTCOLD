@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
 import { socket } from "./socket";
 
 type Message = {
@@ -42,8 +44,15 @@ function App() {
   }, []);
 
   return (
-    <main className="p-3">
-      <div className="">
+    <main>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage/>}>
+
+          </Route>
+        </Routes>
+      </BrowserRouter>
+      {/* <div className="">
         <label htmlFor="message" className="mr-2">
           Send message
         </label>
@@ -73,7 +82,7 @@ function App() {
             ))}
           </ul>
         )}
-      </div>
+      </div> */}
     </main>
   );
 }
