@@ -24,6 +24,7 @@ export class Rooms {
 
   /**
    * Adds a member into the first free room (room with less than 5 members)
+   * @param member
    */
   static addMember(member: Member): Room {
     const freeRoomIndex = Rooms.rooms.findIndex(
@@ -45,6 +46,11 @@ export class Rooms {
     return prevRoom;
   }
 
+  /**
+   * Adds a member into the a specific room based on the rooms Id
+   * @param roomId
+   * @param member
+   */
   static addMemberToRoom(roomId: string, member: Member): Room | undefined {
     const targetRoomIndex = Rooms.rooms.findIndex((room) => room.id === roomId);
 
@@ -57,6 +63,10 @@ export class Rooms {
     return prevRoom;
   }
 
+  /**
+   * Removes a user from all the rooms they are in
+   * @param memberId
+   */
   static removeMember(memberId: string) {
     let foundRoomId: Room | undefined;
     const updatedRooms = Rooms.rooms.map((item) => ({
