@@ -45,6 +45,18 @@ export class Rooms {
     return prevRoom;
   }
 
+  static addMemberToRoom(roomId: string, member: Member): Room | undefined {
+    const targetRoomIndex = Rooms.rooms.findIndex((room) => room.id === roomId);
+
+    if (targetRoomIndex === -1) return;
+
+    const prevRoom = Rooms.rooms[targetRoomIndex];
+    prevRoom.members.push(member);
+    Rooms.rooms[targetRoomIndex] = prevRoom;
+
+    return prevRoom;
+  }
+
   static removeMember(memberId: string) {
     let foundRoomId: Room | undefined;
     const updatedRooms = Rooms.rooms.map((item) => ({
