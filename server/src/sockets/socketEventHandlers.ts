@@ -1,6 +1,7 @@
 import { Socket } from "socket.io";
 import { io } from "../index.js";
-import { Rooms } from "../rooms.js";
+import {RoomList} from "../custom-classes/RoomList.js";
+import {Player} from "../custom-classes/Player.js";
 
 type RoomJoinData = {
   userName: string;
@@ -11,17 +12,16 @@ export const handleNewMessageEvent = (data, socket: Socket) => {
 };
 
 export const handleRoomJoin = (data: RoomJoinData, socket: Socket) => {
-  const freeRoom = Rooms.addMember({
-    id: socket.id,
-    userName: data.userName
-  });
+  const newPlayer = new Player(socket.id, data.userName);
+
+  const freeRoom = RoomList.addPlayerToRoom(newPlayer);
 
   socket.join(freeRoom.id);
   io.to(freeRoom.id).emit("room_message", {
     type: "ROOM_UPDATE",
-    message: `User: ${socket.id} has joined ${freeRoom.id}`,
-    roomInfo: Rooms.rooms.find((item) => item.id === freeRoom.id)
+    message: `User: ${newPlayer.userName} has joined ${freeRoom.id}`,
+    roomInfo: RoomList.rooms[freeRoom.id]
   });
 
-  console.log("Rooms: ", Rooms.rooms);
+  console.log("Rooms: ", RoomList.rooms);
 };
