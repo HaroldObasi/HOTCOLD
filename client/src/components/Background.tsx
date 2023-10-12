@@ -24,10 +24,3 @@ const Background = ({children}:BackgroundProp) => {
 }
 
 export default Background;
-
-
-// body {
-//     background-image: radial-gradient(circle at 1px 1px, black 1px, transparent 0);
-//     background-size: 40px 40px;
-//   }background: rgb(0,224,255);
-//background: linear-gradient(103deg, rgba(0,224,255,1) 0%, rgba(255,183,116,1) 100%);
