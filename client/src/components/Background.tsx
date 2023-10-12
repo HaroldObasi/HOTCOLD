@@ -6,7 +6,7 @@ const Background = ({children}:BackgroundProp) => {
   return (
     <div style={
       {
-        background: "linear-gradient(105deg, rgba(0,224,255,1) 0%, rgba(255,183,116,1) 100%)"
+        background: "linear-gradient(135deg, rgba(0,224,255,1) 0%, rgba(255,183,116,1) 100%)"
       }
     }>
       <div style={
@@ -15,7 +15,7 @@ const Background = ({children}:BackgroundProp) => {
           backgroundSize: "48px 48px"
         }
       }>
-          <div style={{backdropFilter: "blur(2px)"}}>
+          <div style={{backdropFilter: "blur(4px)"}}>
             {children}
           </div>
       </div>

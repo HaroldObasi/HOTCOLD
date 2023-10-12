@@ -11,7 +11,7 @@ const LandingPage = () => {
     <Background>
      <main className="justify-center font-dela">
        <div className="min-h-screen">
-         <h1 className="text-center p-3 mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-50 
+         <h1 className="text-center pt-24 p-3 mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-50 
                        md:text-5xl lg:text-6xl underline underline-offset-[12px]">
            <span className="text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-gray-50">
              HOT{" "}
