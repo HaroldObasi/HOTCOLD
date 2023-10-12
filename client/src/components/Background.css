@@ -1,0 +1,25 @@
+.gradient-layer {
+    background: linear-gradient(135deg, rgba(0,224,255,1) 0%, rgba(255,183,116,1) 100%);
+}
+
+.dots-layer {
+    background-image: radial-gradient(circle at 24px 24px, rgba(168, 234, 254, 0.5) 12px, transparent 0);
+    background-size: 48px 48px;
+}
+
+.blur-layer {
+    position: relative;
+    z-index: 2;
+}
+
+.blur-layer::after {
+    backdrop-filter: blur(4px);
+    content: '';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+}
+
