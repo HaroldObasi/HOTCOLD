@@ -11,7 +11,7 @@ const Background = ({children}:BackgroundProp) => {
     }>
       <div style={
         {
-          backgroundImage: "radial-gradient(circle at 12px 12px, rgba(168, 234, 254, 0.5) 12px, transparent 0)",
+          backgroundImage: "radial-gradient(circle at 24px 24px, rgba(168, 234, 254, 0.5) 12px, transparent 0)",
           backgroundSize: "48px 48px"
         }
       }>
