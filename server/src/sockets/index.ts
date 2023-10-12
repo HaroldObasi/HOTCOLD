@@ -1,9 +1,6 @@
 import { Server, Socket } from "socket.io";
-import { Rooms } from "../rooms.js";
-import {
-  handleNewMessageEvent,
-  handleRoomJoin,
-} from "./socketEventHandlers.js";
+import {RoomList} from "../custom-classes/RoomList.js";
+import {handleNewMessageEvent, handleRoomJoin} from "./socketEventHandlers.js";
 
 export const initializeSocketEvents = (io: Server) => {
   io.on("connection", (socket: Socket) => {
@@ -14,7 +11,7 @@ export const initializeSocketEvents = (io: Server) => {
     socket.on("join_room", (data) => handleRoomJoin(data, socket));
 
     socket.on("disconnect", () => {
-      const leftRoom = Rooms.removeMember(socket.id);
+      const leftRoom = RoomList.removePlayer(socket.id);
 
       if (leftRoom === undefined) {
         console.log("Room not found");
@@ -22,12 +19,12 @@ export const initializeSocketEvents = (io: Server) => {
         io.to(leftRoom.id).emit("room_message", {
           type: "ROOM_UPDATE",
           message: `${socket.id}, has left the room`,
-          roomInfo: Rooms.rooms.find((item) => item.id === leftRoom.id),
+          roomInfo: leftRoom.players
         });
       }
 
       console.log(`Socket id: ${socket.id} has disconnected from the socket`);
-      console.log("Rooms: ", Rooms.rooms);
+      console.log("Rooms: ", RoomList.rooms);
     });
   });
 };
