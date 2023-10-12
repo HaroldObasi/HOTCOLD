@@ -8,7 +8,7 @@ const Footer = () => {
         backgroundImage: "linear-gradient(4deg, rgba(0,0,0,0.3) 80%, transparent 80%)"
       }
     }>
-      <div className='text-center text-white mx-auto max-w-5xl'>
+      <div className='text-center text-white mx-auto max-w-6xl'>
         <div className='pt-60 md:pt-48 pb-16 front-denk'>
           <h2 className='text-4xl lg:text-5xl'>
             Developers
@@ -22,8 +22,8 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className='py-16 max-w-4xl mx-auto'>
-          <p className='font-mono text-l lg:text-xl'>
+        <div className='py-16 max-w-5xl mx-auto'>
+          <p className='font-mono text-md lg:text-lg opacity-[30%]'>
             The owner of this site is not responsible for any user generated content (messages, usernames)
           </p>
         </div>
