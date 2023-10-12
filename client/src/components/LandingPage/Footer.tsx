@@ -5,12 +5,7 @@ const Footer = () => {
   return (
     <div style={
       { 
-        //background: "rgba(0, 0, 0, 0.3)",
-        //width: "100%",
-        //backgroundColor: "rgba(0, 0, 0, 0)",
         backgroundImage: "linear-gradient(4deg, rgba(0,0,0,0.3) 80%, transparent 80%)"
-        //backgroundImage: "linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.3) 100%)"
-        //backgroundColor: "linear-gradient(190deg, rgba(0,0,0,1) 50%, rgba(0,0,0,0.3) 50%)"
       }
     }>
       <div className='text-center text-white mx-auto max-w-5xl'>
