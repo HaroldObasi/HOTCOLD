@@ -59,4 +59,18 @@ export class RoomList {
 
     return foundRoom;
   }
+
+  static serializeRooms(): SerializedRoom[] {
+    return Object.values(RoomList.rooms).map((room) => ({
+      id: room.id,
+      players: room.players.length,
+      isFull: room.players.length >= RoomList.ROOM_MAX_LENGTH
+    }));
+  }
+}
+
+interface SerializedRoom {
+  id: string;
+  players: number;
+  isFull: boolean;
 }
