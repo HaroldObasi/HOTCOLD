@@ -15,35 +15,42 @@ export class RoomList {
     return defaultRooms;
   }
 
-  static addPlayerToRoom(player: Player): GameRoom {
+  static createRoom(player: Player): GameRoom {
+    const newRoom = new GameRoom(uuidv4(), []);
+    newRoom.addPlayer(player);
+    RoomList.rooms[newRoom.id] = newRoom;
+    return newRoom;
+  }
+
+  static addPlayerToFirstAvailableRoom(player: Player): GameRoom {
     const gameRooms = Object.values(RoomList.rooms);
     const freeRoom = gameRooms.find(
-      (room) => room.players.length < RoomList.ROOM_MAX_LENGTH
+      (room) => room.players.length < room.roomMaxCapacity
     );
 
     if (!freeRoom) {
       //create new room and add player
-      const newRoom = new GameRoom(uuidv4(), []);
-      newRoom.addPlayer(player);
+      const newRoom = new GameRoom(uuidv4(), [player]);
       RoomList.rooms[newRoom.id] = newRoom;
       return newRoom;
     }
     freeRoom.addPlayer(player);
-    RoomList.rooms[freeRoom.id] = freeRoom;
     return freeRoom;
   }
 
   static addPlayerToRoomWithId(
     roomId: string,
     player: Player
-  ): GameRoom | undefined {
-    const gameRooms = Object.values(RoomList.rooms);
-    const targetRoom = gameRooms.find((room) => room.id === roomId);
+  ): GameRoom | undefined | null {
 
-    if (!targetRoom) return;
+    if (!RoomList.rooms.hasOwnProperty(roomId)) return;
 
-    targetRoom.addPlayer(player);
-    RoomList.rooms[targetRoom.id] = targetRoom;
+    const targetRoom = RoomList.rooms[roomId];
+
+    if (targetRoom.addPlayer(player)) {
+      return targetRoom;
+    } 
+    return;
   }
 
   static removePlayer(playerId: string) {
