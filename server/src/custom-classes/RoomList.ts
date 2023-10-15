@@ -43,7 +43,7 @@ export class RoomList {
     player: Player
   ): GameRoom | undefined | null {
 
-    if (!RoomList.hasOwnProperty(roomId)) return;
+    if (!RoomList.rooms.hasOwnProperty(roomId)) return;
 
     const targetRoom = RoomList.rooms[roomId];
 
