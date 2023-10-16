@@ -1,5 +1,5 @@
-import { Socket } from "socket.io";
-import { io } from "../index.js";
+import {Socket} from "socket.io";
+import {io} from "../index.js";
 import {RoomList} from "../custom-classes/RoomList.js";
 import {Player} from "../custom-classes/Player.js";
 import {Message} from "custom-classes/GameRoom.js";

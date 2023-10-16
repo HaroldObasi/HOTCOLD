@@ -1,4 +1,4 @@
-import { Server, Socket } from "socket.io";
+import {Server, Socket} from "socket.io";
 import {RoomList} from "../custom-classes/RoomList.js";
 import {
   handleRoomJoin,
