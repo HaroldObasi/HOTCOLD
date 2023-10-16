@@ -1,6 +1,7 @@
 import {GameRoom} from "./GameRoom.js";
 import {Player} from "./Player.js";
 import {v4 as uuidv4} from "uuid";
+import {Socket} from "socket.io";
 
 export class RoomList {
   static rooms: {[roomId: string]: GameRoom} = RoomList.generateDefaultRooms(3);
@@ -15,14 +16,17 @@ export class RoomList {
     return defaultRooms;
   }
 
-  static createRoom(player: Player): GameRoom {
+  static createRoom(player: Player, socket: Socket): GameRoom {
     const newRoom = new GameRoom(uuidv4(), []);
-    newRoom.addPlayer(player);
+    newRoom.addPlayer(player, socket);
     RoomList.rooms[newRoom.id] = newRoom;
     return newRoom;
   }
 
-  static addPlayerToFirstAvailableRoom(player: Player): GameRoom {
+  static addPlayerToFirstAvailableRoom(
+    player: Player,
+    socket: Socket
+  ): GameRoom {
     const gameRooms = Object.values(RoomList.rooms);
     const freeRoom = gameRooms.find(
       (room) => room.players.length < room.roomMaxCapacity
@@ -34,22 +38,22 @@ export class RoomList {
       RoomList.rooms[newRoom.id] = newRoom;
       return newRoom;
     }
-    freeRoom.addPlayer(player);
+    freeRoom.addPlayer(player, socket);
     return freeRoom;
   }
 
   static addPlayerToRoomWithId(
     roomId: string,
-    player: Player
+    player: Player,
+    socket: Socket
   ): GameRoom | undefined | null {
-
     if (!RoomList.rooms.hasOwnProperty(roomId)) return;
 
     const targetRoom = RoomList.rooms[roomId];
 
-    if (targetRoom.addPlayer(player)) {
+    if (targetRoom.addPlayer(player, socket)) {
       return targetRoom;
-    } 
+    }
     return;
   }
 
