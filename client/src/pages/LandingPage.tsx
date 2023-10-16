@@ -9,8 +9,10 @@ import {setName} from "../state/PlayerSlice";
 import FindRoomsModal from "../components/modals/FindRoomsModal";
 
 const LandingPage = () => {
-  const [playModalOpen, setPlayModalOpen] = useState<boolean>(false);
-  const [findRoomsModalOpen, setFindRoomsModalOpen] = useState(false);
+  const [selectedModal, setSelectedModal] = useState<
+    "play" | "find" | "join" | null
+  >(null);
+  
   const playerName = useSelector((state: RootState) => state.player.name);
   const dispatch = useDispatch();
 
@@ -19,10 +21,12 @@ const LandingPage = () => {
       alert("Please enter a name!");
       return;
     }
-    setPlayModalOpen(false);
-    setFindRoomsModalOpen(true);
+    setSelectedModal("find");
   }
 
+  function handleGoBack() {
+    setSelectedModal("play");
+  }
   return (
     <Background>
       <main className="justify-center font-dela">
@@ -32,11 +36,10 @@ const LandingPage = () => {
                        md:text-5xl lg:text-6xl underline underline-offset-[12px]"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-gray-50">
-              HOT{" "}
+              HOT
             </span>
             OR
             <span className="text-transparent bg-clip-text bg-gradient-to-b from-sky-300 to-gray-50">
-              {" "}
               COLD
             </span>
           </h1>
@@ -45,7 +48,7 @@ const LandingPage = () => {
             <StyledButton
               paddingX={"px-24"}
               paddingY={"py-2"}
-              ClickEvent={() => setPlayModalOpen(true)}
+              ClickEvent={() => setSelectedModal("play")}
             >
               PLAY!
             </StyledButton>
@@ -87,8 +90,8 @@ const LandingPage = () => {
           </div>
 
           <PlayModal
-            open={playModalOpen}
-            onClose={() => setPlayModalOpen(false)}
+            open={selectedModal === "play"}
+            onClose={() => setSelectedModal(null)}
           >
             <h2 className="text-center font-denk text-2xl md:text-3xl lg:text-4xl text-black">
               PLAY!
@@ -122,8 +125,9 @@ const LandingPage = () => {
             </div>
           </PlayModal>
           <FindRoomsModal
-            open={findRoomsModalOpen}
-            onClose={() => setFindRoomsModalOpen(false)}
+            open={selectedModal === "find"}
+            onClose={() => setSelectedModal(null)}
+            handleGoBack={handleGoBack}
           />
         </div>
         <Footer />

@@ -4,8 +4,9 @@ import Room from "../Room/Room";
 type FindRoomsModalProps = {
   open: boolean;
   onClose: () => void;
+  handleGoBack: () => void;
 };
-export default function FindRoomsModal({open, onClose}: FindRoomsModalProps) {
+export default function FindRoomsModal({open, onClose,handleGoBack}: FindRoomsModalProps) {
   return (
     <PlayModal open={open} onClose={onClose}>
       <div className=" p-3 flex items-center">
@@ -13,7 +14,7 @@ export default function FindRoomsModal({open, onClose}: FindRoomsModalProps) {
           <button
             type="button"
             className="mr-2 text-xl text-white drop-shadow-lg"
-            onClick={onClose}
+            onClick={handleGoBack}
           >
             <i className="fa-solid fa-arrow-left"></i>
           </button>
