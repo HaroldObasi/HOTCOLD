@@ -12,7 +12,7 @@ const LandingPage = () => {
   const [selectedModal, setSelectedModal] = useState<
     "play" | "find" | "join" | null
   >(null);
-  
+
   const playerName = useSelector((state: RootState) => state.player.name);
   const dispatch = useDispatch();
 
@@ -107,6 +107,7 @@ const LandingPage = () => {
                 <input
                   type="text"
                   id="name-input"
+                  value={playerName}
                   onChange={(e) => dispatch(setName(e.target.value))}
                   className="bg-sky-300 border border-white text-white text-md
                             outline-2 outline-white

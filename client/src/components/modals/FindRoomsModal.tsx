@@ -23,8 +23,8 @@ export default function FindRoomsModal({open, onClose,handleGoBack}: FindRoomsMo
           <div className=" flex items-center justify-between text-white ">
             <h2 className=" text-xl ">
               <span className=" underline decoration-4 underline-offset-4">
-                Browse{" "}
-              </span>{" "}
+                Browse
+              </span>
               Rooms
             </h2>
             <div className=" flex items-center">

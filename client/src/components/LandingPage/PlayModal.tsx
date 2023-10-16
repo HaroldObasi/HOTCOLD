@@ -18,10 +18,6 @@ const PlayModal = ({open, onClose, children}: PlayModalProps) => {
 
   const container = useRef<HTMLDivElement>(null);
   const onOverlayClick = (e: React.MouseEvent) => {
-    console.log(
-      "onOverlayClick",
-      container.current?.contains(e.target as Node)
-    );
     if (!container.current?.contains(e.target as Node)) {
       onClose();
     }
