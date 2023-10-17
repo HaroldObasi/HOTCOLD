@@ -24,14 +24,16 @@ export class GameRoom {
   id: string;
   players: Player[];
   host: Player;
+  isPrivateRoom: boolean;
   targetWord: string | null;
   roomMaxCapacity: number;
   messages: Message[];
   rounds: number;
 
-  constructor(id: string, players: Player[], roomMaxCapcity?: number) {
+  constructor(id: string, players: Player[], roomMaxCapcity?: number,isPrivateRoom:boolean = false) {
     this.id = id;
     this.players = players;
+    this.isPrivateRoom = isPrivateRoom;
     this.roomMaxCapacity =
       typeof roomMaxCapcity === "undefined" ? 5 : roomMaxCapcity;
     if (players.length > 0) {

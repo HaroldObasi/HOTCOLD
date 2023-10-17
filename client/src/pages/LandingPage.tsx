@@ -7,17 +7,23 @@ import Background from "../components/Background";
 import {useDispatch, useSelector} from "react-redux";
 import {setName} from "../state/PlayerSlice";
 import FindRoomsModal from "../components/modals/FindRoomsModal";
+import JoinRoomModal from "../components/modals/JoinRoomModal";
+import CreateRoomModal from "../components/modals/CreateRoomModal";
 
 const LandingPage = () => {
   const [selectedModal, setSelectedModal] = useState<
-    "play" | "find" | "join" | null
+    "play" | "find" | "join" | "create" | null
   >(null);
 
   const playerName = useSelector((state: RootState) => state.player.name);
   const dispatch = useDispatch();
 
+  function isValidName(name: string) {
+    return name.trim().length > 0;
+  }
+
   function handleFindRooms() {
-    if (playerName?.trim().length === 0) {
+    if (!isValidName(playerName)) {
       alert("Please enter a name!");
       return;
     }
@@ -27,6 +33,23 @@ const LandingPage = () => {
   function handleGoBack() {
     setSelectedModal("play");
   }
+
+  function handleJoinRoom() {
+    if (!isValidName(playerName)) {
+      alert("Please enter your name!");
+      return;
+    }
+    setSelectedModal("join");
+  }
+
+  function handleCreateRoom() {
+    if (!isValidName(playerName)) {
+      alert("Please enter your name!");
+      return;
+    }
+    setSelectedModal("create");
+  }
+
   return (
     <Background>
       <main className="justify-center font-dela">
@@ -93,42 +116,53 @@ const LandingPage = () => {
             open={selectedModal === "play"}
             onClose={() => setSelectedModal(null)}
           >
-            <h2 className="text-center font-denk text-2xl md:text-3xl lg:text-4xl text-black">
-              PLAY!
-            </h2>
-            <div className="p-2 flex flex-col justify-center px-[20%] space-y-8">
-              <div className="mb-2">
-                <label
-                  htmlFor="name-input"
-                  className="block pt-4 pb-2 mx-0 text-lg font-medium text-white"
-                >
-                  Name:
-                </label>
-                <input
-                  type="text"
-                  id="name-input"
-                  value={playerName}
-                  onChange={(e) => dispatch(setName(e.target.value))}
-                  className="bg-sky-300 border border-white text-white text-md
+            <div className="py-4">
+              <h2 className="text-center font-denk text-2xl md:text-3xl lg:text-4xl text-black">
+                PLAY!
+              </h2>
+              <div className="p-2 flex flex-col justify-center px-[20%] space-y-8">
+                <div className="mb-2">
+                  <label
+                    htmlFor="name-input"
+                    className="block pt-4 pb-2 mx-0 text-lg font-medium text-white"
+                  >
+                    Name:
+                  </label>
+                  <input
+                    type="text"
+                    id="name-input"
+                    placeholder="Enter Name"
+                    value={playerName}
+                    onChange={(e) => dispatch(setName(e.target.value))}
+                    className="bg-sky-300 border border-white text-white text-md
                             outline-2 outline-white
                             rounded-md block w-full p-2.5"
-                />
+                  />
+                </div>
+                <StyledButton paddingY={"py-3"} ClickEvent={handleFindRooms}>
+                  FIND ROOM
+                </StyledButton>
+                <StyledButton paddingY={"py-3"} ClickEvent={handleCreateRoom}>
+                  CREATE ROOM
+                </StyledButton>
+                <StyledButton paddingY={"py-3"} ClickEvent={handleJoinRoom}>
+                  JOIN ROOM
+                </StyledButton>
               </div>
-              <StyledButton paddingY={"py-3"} ClickEvent={handleFindRooms}>
-                FIND ROOM
-              </StyledButton>
-              <StyledButton paddingY={"py-3"} ClickEvent={() => {}}>
-                CREATE ROOM
-              </StyledButton>
-              <StyledButton paddingY={"py-3"} ClickEvent={() => {}}>
-                JOIN ROOM
-              </StyledButton>
             </div>
           </PlayModal>
           <FindRoomsModal
             open={selectedModal === "find"}
             onClose={() => setSelectedModal(null)}
             handleGoBack={handleGoBack}
+          />
+          <JoinRoomModal
+            open={selectedModal === "join"}
+            onClose={() => setSelectedModal(null)}
+          />
+          <CreateRoomModal
+            open={selectedModal === "create"}
+            onClose={() => setSelectedModal(null)}
           />
         </div>
         <Footer />

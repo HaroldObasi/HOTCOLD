@@ -5,7 +5,6 @@ import {Socket} from "socket.io";
 
 export class RoomList {
   static rooms: {[roomId: string]: GameRoom} = RoomList.generateDefaultRooms(3);
-  static ROOM_MAX_LENGTH: number = 5;
 
   static generateDefaultRooms(length: number) {
     const defaultRooms = {};
@@ -16,8 +15,8 @@ export class RoomList {
     return defaultRooms;
   }
 
-  static createRoom(player: Player, socket: Socket): GameRoom {
-    const newRoom = new GameRoom(uuidv4(), []);
+  static createRoom(player: Player, socket: Socket, roomMaxCapacity= 5,isPrivateRoom = false,roomId=uuidv4()): GameRoom {
+    const newRoom = new GameRoom(roomId, [],roomMaxCapacity,isPrivateRoom);
     newRoom.addPlayer(player, socket);
     RoomList.rooms[newRoom.id] = newRoom;
     return newRoom;
