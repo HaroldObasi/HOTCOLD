@@ -16,7 +16,7 @@ export const getAllRooms = (req: Request, res: Response) => {
       host: room.host,
       isPrivateRoom: room.isPrivateRoom
     }))
-    .filter((room) => !room.isPrivateRoom)
+    .filter((room) => !room.isPrivateRoom && !(room.players.length === room.roomMaxCapacity))
     .slice(0, 10);//only ten rooms we can paginate later
 
   res.json({rooms});

@@ -30,7 +30,12 @@ export class GameRoom {
   messages: Message[];
   rounds: number;
 
-  constructor(id: string, players: Player[], roomMaxCapcity?: number,isPrivateRoom:boolean = false) {
+  constructor(
+    id: string,
+    players: Player[],
+    roomMaxCapcity?: number,
+    isPrivateRoom: boolean = false
+  ) {
     this.id = id;
     this.players = players;
     this.isPrivateRoom = isPrivateRoom;
@@ -51,9 +56,12 @@ export class GameRoom {
       this.host = player;
     }
     player.roomId = this.id;
+    // avoid adding the same player twice
+    if (this.players.find((p) => p.id === player.id)) {
+      return false;
+    }
     this.players.push(player);
     socket.join(this.id);
-
     if (this.players.length > 1 && !this.targetWord) {
       this.startGame();
     }

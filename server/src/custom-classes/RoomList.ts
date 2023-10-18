@@ -15,9 +15,18 @@ export class RoomList {
     return defaultRooms;
   }
 
-  static createRoom(player: Player, socket: Socket, roomMaxCapacity= 5,isPrivateRoom = false,roomId=uuidv4()): GameRoom {
-    const newRoom = new GameRoom(roomId, [],roomMaxCapacity,isPrivateRoom);
-    newRoom.addPlayer(player, socket);
+  static createRoom(
+    player: Player,
+    socket: Socket,
+    roomMaxCapacity = 5,
+    isPrivateRoom = false,
+    roomId = uuidv4()
+  ): GameRoom {
+    const newRoom = new GameRoom(roomId, [], roomMaxCapacity, isPrivateRoom);
+    const isPlayerAdded = newRoom.addPlayer(player, socket);
+    if (RoomList.rooms.hasOwnProperty(newRoom.id)) {
+      throw new Error("Room already exists");
+    }
     RoomList.rooms[newRoom.id] = newRoom;
     return newRoom;
   }
@@ -45,14 +54,15 @@ export class RoomList {
     roomId: string,
     player: Player,
     socket: Socket
-  ): GameRoom | undefined | null {
+  ): GameRoom | undefined | null | boolean {
     if (!RoomList.rooms.hasOwnProperty(roomId)) return;
 
     const targetRoom = RoomList.rooms[roomId];
 
     if (targetRoom.addPlayer(player, socket)) {
-      return targetRoom;
+      return true;
     }
+    console.log("Player already in room");
     return;
   }
 
