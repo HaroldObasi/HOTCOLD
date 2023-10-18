@@ -19,10 +19,16 @@ export default function CreateRoomModal({open, onClose}: JoinRoomModalProps) {
   useEffect(() => {
     socket.on("room_create_success", (data: string) => {
       alert("Room Created Successfully :-" + data);
-      console.log(data);
+      //  navigate to game page
+    });
+    socket.on("room_create_error", (data: {message: string}) => {
+      alert("Room Creation Failed :-" + data.message);
+      console.log(data.message);
     });
     return () => {
+      // add listener later 
       socket.off("room_create_success");
+      socket.off("room_create_error");
     };
   }, []);
 

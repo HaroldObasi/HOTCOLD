@@ -14,10 +14,14 @@ export default function JoinRoomModal({open, onClose}: JoinRoomModalProps) {
   useEffect(() => {
     socket.on("room_join_with_id_success", (data: string) => {
       alert("Room Joined Successfully :-" + data);
-      console.log(data);
+    //  navigate to game page
+    });
+    socket.on("room_join_with_id_error", (data: {message:string}) => {
+      alert("Error in joining room :-" + data.message);
     });
     return () => {
       socket.off("room_join_with_id_success");
+      socket.off("room_join_with_id_error");
     };
   }, []);
 
