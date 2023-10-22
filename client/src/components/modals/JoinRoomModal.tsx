@@ -1,7 +1,8 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import StyledButton from "../LandingPage/Button";
 import PlayModal from "../LandingPage/PlayModal";
 import {socket} from "../../socket";
+import useRoomMessage, {ResponseData} from "../../hooks/useRoomMessage";
 
 type JoinRoomModalProps = {
   open: boolean;
@@ -10,20 +11,12 @@ type JoinRoomModalProps = {
 
 export default function JoinRoomModal({open, onClose}: JoinRoomModalProps) {
   const [roomCode, setRoomCode] = useState("");
+  const casesToHandle = {
+    join_room_with_id: (data: ResponseData) =>
+      console.log("join_room_with_id", data.status)
+  };
 
-  useEffect(() => {
-    socket.on("room_join_with_id_success", (data: string) => {
-      alert("Room Joined Successfully :-" + data);
-    //  navigate to game page
-    });
-    socket.on("room_join_with_id_error", (data: {message:string}) => {
-      alert("Error in joining room :-" + data.message);
-    });
-    return () => {
-      socket.off("room_join_with_id_success");
-      socket.off("room_join_with_id_error");
-    };
-  }, []);
+  useRoomMessage(casesToHandle);
 
   function handleRoomJoin() {
     if (roomCode.trim().length === 0) {

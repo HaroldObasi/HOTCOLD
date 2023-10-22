@@ -3,6 +3,7 @@ import {io} from "../index.js";
 import {RoomList} from "../custom-classes/RoomList.js";
 import {Player} from "../custom-classes/Player.js";
 import {Message} from "custom-classes/GameRoom.js";
+import {roomMessage} from "../utils/roomMessage.js";
 
 //TODO add handlers for removing a player
 
@@ -28,28 +29,43 @@ export const handleRoomJoinWithID = (data: RoomChangeData, socket: Socket) => {
   );
 
   if (!isPlayerAddedToRoom) {
-    socket.emit("room_join_with_id_error", {
-      message: "Player has already joined the room"
-    });
+    socket.emit(
+      "ROOM_MESSAGE",
+      roomMessage("room_join_with_id", "Player has already joined the room", {}, "fail")
+    );
     return;
   }
-  socket.emit("room_join_with_id_success", data.roomId);
+  socket.emit(
+    "ROOM_MESSAGE",
+    roomMessage(
+      "room_join_with_id",
+      "Player joined the room",
+      RoomList.rooms[data.roomId],
+      "success"
+    )
+  );
 };
 
 export const handleCreateRoom = (data: RoomChangeData, socket: Socket) => {
   const newPlayer = new Player(socket.id, data.userName);
-  try {
-    const room = RoomList.createRoom(
-      newPlayer,
-      socket,
-      data.roomMaxCapacity,
-      data.isPrivateRoom,
-      data.roomId
+  const room = RoomList.createRoom(
+    newPlayer,
+    socket,
+    data.roomMaxCapacity,
+    data.isPrivateRoom,
+    data.roomId
+  );
+  if (!room) {
+    socket.emit(
+      "ROOM_MESSAGE",
+      roomMessage("room_create", "Room already exists", {}, "fail")
     );
-    socket.emit("room_create_success", room.id);
-  } catch (error) {
-    socket.emit("room_create_error", {message: error.message});
+    return;
   }
+  socket.emit(
+    "ROOM_MESSAGE",
+    roomMessage("room_create", "Room created", room, "success")
+  );
 };
 
 export const handleRoomMessage = (data: Message) => {

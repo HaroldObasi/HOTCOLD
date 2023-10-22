@@ -152,19 +152,22 @@ const LandingPage = () => {
               </div>
             </div>
           </PlayModal>
-          <FindRoomsModal
-            open={selectedModal === "find"}
-            onClose={() => setSelectedModal(null)}
-            handleGoBack={handleGoBack}
-          />
-          <JoinRoomModal
-            open={selectedModal === "join"}
-            onClose={() => setSelectedModal(null)}
-          />
-          <CreateRoomModal
-            open={selectedModal === "create"}
-            onClose={() => setSelectedModal(null)}
-          />
+          {selectedModal === "find" && (
+            <FindRoomsModal
+              open={true}
+              onClose={() => setSelectedModal(null)}
+              handleGoBack={handleGoBack}
+            />
+          )}
+          {selectedModal === "join" && (
+            <JoinRoomModal open={true} onClose={() => setSelectedModal(null)} />
+          )}
+          {selectedModal === "create" && (
+            <CreateRoomModal
+              open={true}
+              onClose={() => setSelectedModal(null)}
+            />
+          )}
         </div>
         <Footer />
       </main>

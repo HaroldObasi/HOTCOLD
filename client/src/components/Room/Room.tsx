@@ -1,7 +1,8 @@
 import {useSelector} from "react-redux";
 import {socket} from "../../socket";
 import {RootState} from "../../state/PlayerStore";
-import {useEffect, useState} from "react";
+import {useState,useMemo} from "react";
+import useRoomMessage,{ResponseData} from "../../hooks/useRoomMessage";
 
 type RoomProps = {
   room: RoomType;
@@ -19,18 +20,11 @@ export default function Room({room, roomName}: RoomProps) {
   const playerName = useSelector((state: RootState) => state.player.name);
   const isRoomFull = room.players.length === room.roomMaxCapacity;
   const [isJoiningRoom, setIsJoiningRoom] = useState(false);
+  const casesToHandle = useMemo(()=>({
+    room_join_with_id: (data:ResponseData) =>console.log("room_join_with_id", data.status)
+  }),[])
 
-  useEffect(() => {
-    socket.on("room_join_with_id_success", handleRoomJoinSuccess);
-    socket.on("room_join_with_id_error", (data: {message: string}) => {
-      setIsJoiningRoom(false);
-      alert("Error in joining room :-" + data.message);
-    });
-    return () => {
-      socket.off("room_join_with_id_success", handleRoomJoinSuccess);
-      socket.off("room_join_with_id_error");
-    };
-  }, []);
+  useRoomMessage(casesToHandle)
 
   function handleJoinRoom() {
     setIsJoiningRoom(true);
@@ -38,11 +32,7 @@ export default function Room({room, roomName}: RoomProps) {
     socket.emit("join_room_with_id", data);
   }
 
-  function handleRoomJoinSuccess(roomId: string) {
-    setIsJoiningRoom(false);
-    console.log("successfull join room", roomId);
-    // redirect to game page
-  }
+
   return (
     <div className=" flex items-center justify-between drop-shadow-[3px_6px_4px_rgba(0,0,0,0.5)] p-2 bg-gray-200/70  my-2 rounded-md">
       <h3 className=" text-[#3E3E3E]  font-bold md:text-xl">{roomName}</h3>

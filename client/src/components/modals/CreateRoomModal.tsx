@@ -1,9 +1,10 @@
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import StyledButton from "../LandingPage/Button";
 import PlayModal from "../LandingPage/PlayModal";
 import {socket} from "../../socket";
 import {useSelector} from "react-redux";
 import {RootState} from "../../state/PlayerStore";
+import useRoomMessage, {ResponseData} from "../../hooks/useRoomMessage";
 
 type JoinRoomModalProps = {
   open: boolean;
@@ -15,22 +16,11 @@ export default function CreateRoomModal({open, onClose}: JoinRoomModalProps) {
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
   const [playersSize, setPlayersSize] = useState(5);
   const playerName = useSelector((state: RootState) => state.player.name);
+  const casesToHandle = {
+    room_create: (data: ResponseData) => console.log("room_create", data.status)
+  };
 
-  useEffect(() => {
-    socket.on("room_create_success", (data: string) => {
-      alert("Room Created Successfully :-" + data);
-      //  navigate to game page
-    });
-    socket.on("room_create_error", (data: {message: string}) => {
-      alert("Room Creation Failed :-" + data.message);
-      console.log(data.message);
-    });
-    return () => {
-      // add listener later 
-      socket.off("room_create_success");
-      socket.off("room_create_error");
-    };
-  }, []);
+  useRoomMessage(casesToHandle);
 
   function handleCreateRoom() {
     if (roomName.trim().length === 0) {

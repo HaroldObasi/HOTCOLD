@@ -3,6 +3,7 @@ import {Player} from "./Player.js";
 import {v4 as uuidv4} from "uuid";
 import {Socket} from "socket.io";
 
+
 export class RoomList {
   static rooms: {[roomId: string]: GameRoom} = RoomList.generateDefaultRooms(3);
 
@@ -21,11 +22,11 @@ export class RoomList {
     roomMaxCapacity = 5,
     isPrivateRoom = false,
     roomId = uuidv4()
-  ): GameRoom {
+  ): GameRoom | boolean {
     const newRoom = new GameRoom(roomId, [], roomMaxCapacity, isPrivateRoom);
     const isPlayerAdded = newRoom.addPlayer(player, socket);
     if (RoomList.rooms.hasOwnProperty(newRoom.id)) {
-      throw new Error("Room already exists");
+      return false;
     }
     RoomList.rooms[newRoom.id] = newRoom;
     return newRoom;
