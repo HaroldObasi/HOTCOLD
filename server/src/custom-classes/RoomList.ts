@@ -55,13 +55,13 @@ export class RoomList {
     roomId: string,
     player: Player,
     socket: Socket
-  ): GameRoom | undefined | null | boolean {
+  ): GameRoom | undefined | null {
     if (!RoomList.rooms.hasOwnProperty(roomId)) return;
 
     const targetRoom = RoomList.rooms[roomId];
 
     if (targetRoom.addPlayer(player, socket)) {
-      return true;
+      return targetRoom;
     }
     console.log("Player already in room");
     return;
