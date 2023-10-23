@@ -2,7 +2,7 @@ import {useState} from "react";
 import StyledButton from "../LandingPage/Button";
 import PlayModal from "../LandingPage/PlayModal";
 import {socket} from "../../socket";
-import useRoomMessage, {ResponseData} from "../../hooks/useRoomMessage";
+import useSocketMessage, {ResponseData} from "../../hooks/useSocketMessage";
 
 type JoinRoomModalProps = {
   open: boolean;
@@ -16,7 +16,7 @@ export default function JoinRoomModal({open, onClose}: JoinRoomModalProps) {
       console.log("join_room_with_id", data.status)
   };
 
-  useRoomMessage(casesToHandle);
+  useSocketMessage("ROOM_MESSAGE",casesToHandle);
 
   function handleRoomJoin() {
     if (roomCode.trim().length === 0) {

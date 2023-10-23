@@ -11,18 +11,17 @@ export type ResponseData = {
 type Cases = {
   [key: string]: (data: ResponseData) => void;
 };
-export default function useRoomMessage(casesToHandle: Cases) {
+export default function useSocketMessage(event:string,casesToHandle: Cases) {
   const casesToHandleRef = useRef(casesToHandle);
   useEffect(() => {
-    console.log("rendering useRoomMessage:-");
-    function handleRoomMessage(data: ResponseData) {
+    function handleSocketMessage(data: ResponseData) {
       if (!casesToHandleRef.current[data.type]) return;
       casesToHandleRef.current[data.type](data);
     }
 
-    socket.on("ROOM_MESSAGE", handleRoomMessage);
+    socket.on(event, handleSocketMessage);
     return () => {
-      socket.off("ROOM_MESSAGE", handleRoomMessage);
+      socket.off(event, handleSocketMessage);
     };
-  }, []);
+  }, [event]);
 }

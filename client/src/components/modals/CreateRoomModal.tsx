@@ -4,7 +4,7 @@ import PlayModal from "../LandingPage/PlayModal";
 import {socket} from "../../socket";
 import {useSelector} from "react-redux";
 import {RootState} from "../../state/PlayerStore";
-import useRoomMessage, {ResponseData} from "../../hooks/useRoomMessage";
+import useSocketMessage, {ResponseData} from "../../hooks/useSocketMessage";
 
 type JoinRoomModalProps = {
   open: boolean;
@@ -20,7 +20,7 @@ export default function CreateRoomModal({open, onClose}: JoinRoomModalProps) {
     room_create: (data: ResponseData) => console.log("room_create", data.status)
   };
 
-  useRoomMessage(casesToHandle);
+  useSocketMessage("ROOM_MESSAGE",casesToHandle);
 
   function handleCreateRoom() {
     if (roomName.trim().length === 0) {
