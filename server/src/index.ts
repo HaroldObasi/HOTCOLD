@@ -22,7 +22,7 @@ app.use(cors());
 app.use("/api/rooms", roomRoutes);
 
 app.get("/", (req: Request, res: Response) => {
-  return res.send("hello fro");
+  return res.send("hello world");
 });
 
 initializeSocketEvents(io);
