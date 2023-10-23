@@ -58,11 +58,11 @@ export default function FindRoomsModal({
               </h2>
             )}
             {!loading &&
-              roomsData.map((room) => (
+              roomsData.map((room,i) => (
                 <Room
                   key={room.id}
                   room={room}
-                  roomName={room.id.substring(0, 10)}
+                  roomName={`Room ${i.toString()}`}
                 />
               ))}
           </div>
