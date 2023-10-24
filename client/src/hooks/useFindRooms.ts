@@ -1,5 +1,7 @@
 import axios from "axios";
 import {useEffect, useState} from "react";
+import { socket } from "../socket";
+import { ResponseData } from "./useSocketMessage";
 type Room = {
   id: string;
   players: string;
@@ -30,6 +32,27 @@ export default function useFindRooms(visible: boolean) {
   useEffect(() => {
     if (visible) fetchRooms();
   }, [visible]);
+
+  useEffect(()=>{
+    roomsData.forEach(room =>{
+      socket.on(`room-${room.id}-update`, (data:ResponseData) => {
+        setRoomsData((prev) => {
+          const index = prev.findIndex((r) => r.id === room.id);
+          const newRooms = [...prev];
+          newRooms[index] = data.payload as Room;
+          return newRooms;
+        });
+      });
+    })
+
+    return ()=>{
+      roomsData.forEach(room =>{
+        socket.off(`room-${room.id}-update`);
+      })
+    }
+    
+
+  },[roomsData])
 
   return {roomsData, fetchError, loading, refetchRoom};
 }
