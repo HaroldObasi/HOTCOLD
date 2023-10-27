@@ -36,12 +36,16 @@ export default function JoinRoomModal({
   }
 
   return (
-    <PlayModal open={open} onClose={onClose} overlayClassName=" backdrop-blur">
+    <PlayModal
+      open={open}
+      onClose={onClose}
+      overlayClassName=" backdrop-blur [&>.relative]:max-w-[500px]"
+    >
       <div className="py-4 px-3 flex items-center">
-        <div className=" self-start">
+        <div className=" self-start pl-2">
           <button
             type="button"
-            className="mr-2 text-xl text-white drop-shadow-lg"
+            className="mr-2 text-xl  drop-shadow-lg"
             onClick={handleGoBack}
           >
             <i className="fa-solid fa-arrow-left"></i>
