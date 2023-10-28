@@ -160,12 +160,17 @@ const LandingPage = () => {
             />
           )}
           {selectedModal === "join" && (
-            <JoinRoomModal open={true} onClose={() => setSelectedModal(null)} />
+            <JoinRoomModal
+              open={true}
+              onClose={() => setSelectedModal(null)}
+              handleGoBack={handleGoBack}
+            />
           )}
           {selectedModal === "create" && (
             <CreateRoomModal
               open={true}
               onClose={() => setSelectedModal(null)}
+              handleGoBack={handleGoBack}
             />
           )}
         </div>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import {useEffect, useState} from "react";
+
 type Room = {
   id: string;
   players: string;
@@ -30,6 +31,8 @@ export default function useFindRooms(visible: boolean) {
   useEffect(() => {
     if (visible) fetchRooms();
   }, [visible]);
+
+
 
   return {roomsData, fetchError, loading, refetchRoom};
 }
