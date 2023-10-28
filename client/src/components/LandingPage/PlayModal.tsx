@@ -4,9 +4,10 @@ type PlayModalProps = {
   open: boolean;
   onClose: () => void;
   children?: React.ReactNode;
+  overlayClassName?: string;
 };
 
-const PlayModal = ({open, onClose, children}: PlayModalProps) => {
+const PlayModal = ({open, onClose, children,overlayClassName}: PlayModalProps) => {
   useEffect(() => {
     const onKeyPress = (e: KeyboardEvent) => {
       if (open && e.key === "Escape") onClose();
@@ -25,7 +26,7 @@ const PlayModal = ({open, onClose, children}: PlayModalProps) => {
 
   return (
     <div
-      className={`fixed inset-0 z-10 p-4 bg-gray-900/50 ${
+      className={`fixed inset-0 z-10 p-4 bg-gray-900/50 ${overlayClassName}  ${
         open ? "block" : "hidden"
       }`}
       onClick={onOverlayClick}
@@ -34,7 +35,7 @@ const PlayModal = ({open, onClose, children}: PlayModalProps) => {
         className="relative top-[10%] w-full max-w-[600px] mx-auto mt-8"
         ref={container}
       >
-        <div className="py-4 overflow-hidden bg-gray-200/80 rounded-3xl shadow-xl">
+        <div className=" overflow-hidden bg-gray-200/80 rounded-3xl shadow-xl">
           {children}
         </div>
       </div>

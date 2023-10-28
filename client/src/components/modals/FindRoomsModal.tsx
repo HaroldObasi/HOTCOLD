@@ -1,15 +1,23 @@
 import PlayModal from "../LandingPage/PlayModal";
 import Room from "../Room/Room";
+import useFindRooms from "../../hooks/useFindRooms";
 
 type FindRoomsModalProps = {
   open: boolean;
   onClose: () => void;
   handleGoBack: () => void;
 };
-export default function FindRoomsModal({open, onClose,handleGoBack}: FindRoomsModalProps) {
+export default function FindRoomsModal({
+  open,
+  onClose,
+  handleGoBack
+}: FindRoomsModalProps) {
+  const {roomsData, loading, refetchRoom} = useFindRooms(open);
+  const noRoomsAvailable = roomsData.length === 0 && !loading;
+
   return (
-    <PlayModal open={open} onClose={onClose}>
-      <div className=" p-3 flex items-center">
+    <PlayModal open={open} onClose={onClose} overlayClassName=" backdrop-blur">
+      <div className="py-4 px-3 flex items-center">
         <div className=" self-start">
           <button
             type="button"
@@ -31,7 +39,7 @@ export default function FindRoomsModal({open, onClose,handleGoBack}: FindRoomsMo
               <button
                 type="button"
                 className=" text-black text-3xl mr-3"
-                onClick={() => {}}
+                onClick={refetchRoom}
               >
                 <i className="fa-solid fa-rotate-right"></i>
               </button>
@@ -41,17 +49,22 @@ export default function FindRoomsModal({open, onClose,handleGoBack}: FindRoomsMo
             </div>
           </div>
           <div className="mt-3 h-60 overflow-auto game-scrollbar pr-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((room) => (
-              <Room
-                key={room}
-                room={{
-                  roomName: "Room " + room.toString(),
-                  roomSize: 5,
-                  joinedPlayersCount: room,
-                  isFull: room === 5
-                }}
-              />
-            ))}
+            {noRoomsAvailable && (
+              <h2 className="text-white text-xl text-center">No Rooms Found</h2>
+            )}
+            {loading && (
+              <h2 className="text-white text-xl text-center animate-bounce">
+                Loading...
+              </h2>
+            )}
+            {!loading &&
+              roomsData.map((room,i) => (
+                <Room
+                  key={room.id}
+                  room={room}
+                  roomName={`Room ${i.toString()}`}
+                />
+              ))}
           </div>
         </div>
       </div>

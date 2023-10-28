@@ -24,14 +24,21 @@ export class GameRoom {
   id: string;
   players: Player[];
   host: Player;
+  isPrivateRoom: boolean;
   targetWord: string | null;
   roomMaxCapacity: number;
   messages: Message[];
   rounds: number;
 
-  constructor(id: string, players: Player[], roomMaxCapcity?: number) {
+  constructor(
+    id: string,
+    players: Player[],
+    roomMaxCapcity?: number,
+    isPrivateRoom: boolean = false
+  ) {
     this.id = id;
     this.players = players;
+    this.isPrivateRoom = isPrivateRoom;
     this.roomMaxCapacity =
       typeof roomMaxCapcity === "undefined" ? 5 : roomMaxCapcity;
     if (players.length > 0) {
@@ -49,9 +56,12 @@ export class GameRoom {
       this.host = player;
     }
     player.roomId = this.id;
+    // avoid adding the same player twice
+    if (this.players.find((p) => p.id === player.id)) {
+      return false;
+    }
     this.players.push(player);
     socket.join(this.id);
-
     if (this.players.length > 1 && !this.targetWord) {
       this.startGame();
     }

@@ -3,9 +3,9 @@ import {Player} from "./Player.js";
 import {v4 as uuidv4} from "uuid";
 import {Socket} from "socket.io";
 
+
 export class RoomList {
   static rooms: {[roomId: string]: GameRoom} = RoomList.generateDefaultRooms(3);
-  static ROOM_MAX_LENGTH: number = 5;
 
   static generateDefaultRooms(length: number) {
     const defaultRooms = {};
@@ -16,9 +16,18 @@ export class RoomList {
     return defaultRooms;
   }
 
-  static createRoom(player: Player, socket: Socket): GameRoom {
-    const newRoom = new GameRoom(uuidv4(), []);
-    newRoom.addPlayer(player, socket);
+  static createRoom(
+    player: Player,
+    socket: Socket,
+    roomMaxCapacity = 5,
+    isPrivateRoom = false,
+    roomId = uuidv4()
+  ): GameRoom | boolean {
+    const newRoom = new GameRoom(roomId, [], roomMaxCapacity, isPrivateRoom);
+    const isPlayerAdded = newRoom.addPlayer(player, socket);
+    if (RoomList.rooms.hasOwnProperty(newRoom.id)) {
+      return false;
+    }
     RoomList.rooms[newRoom.id] = newRoom;
     return newRoom;
   }
@@ -54,6 +63,7 @@ export class RoomList {
     if (targetRoom.addPlayer(player, socket)) {
       return targetRoom;
     }
+    console.log("Player already in room");
     return;
   }
 

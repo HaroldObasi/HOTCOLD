@@ -21,9 +21,9 @@ export const initializeSocketEvents = (io: Server) => {
 
     socket.on("send_message", (data) => handleRoomMessage(data));
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", (reason:string) => {
       const leftRoom = RoomList.removePlayer(socket.id);
-
+      console.log('Reason:- ',reason);
       if (leftRoom === undefined) {
         console.log("Room not found");
       } else {
