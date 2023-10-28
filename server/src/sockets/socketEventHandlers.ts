@@ -30,13 +30,18 @@ export const handleRoomJoinWithID = (data: RoomChangeData, socket: Socket) => {
 
   if (!isPlayerAddedToRoom) {
     socket.emit(
-      "ROOM_MESSAGE",
-      roomMessage("room_join_with_id", "Player has already joined the room", {}, "fail")
+      "room_message",
+      roomMessage(
+        "room_join_with_id",
+        "Player has already joined the room",
+        {},
+        "fail"
+      )
     );
     return;
   }
   socket.emit(
-    "ROOM_MESSAGE",
+    "room_message",
     roomMessage(
       "room_join_with_id",
       "Player joined the room",
@@ -57,13 +62,13 @@ export const handleCreateRoom = (data: RoomChangeData, socket: Socket) => {
   );
   if (!room) {
     socket.emit(
-      "ROOM_MESSAGE",
+      "room_message",
       roomMessage("room_create", "Room already exists", {}, "fail")
     );
     return;
   }
   socket.emit(
-    "ROOM_MESSAGE",
+    "room_message",
     roomMessage("room_create", "Room created", room, "success")
   );
 };

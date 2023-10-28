@@ -21,7 +21,7 @@ export default function CreateRoomModal({open, onClose,handleGoBack}: JoinRoomMo
     room_create: (data: ResponseData) => console.log("room_create", data.status)
   };
 
-  useSocketMessage("ROOM_MESSAGE", casesToHandle);
+  useSocketMessage("room_message", casesToHandle);
 
   function handleCreateRoom() {
     if (roomName.trim().length === 0) {
