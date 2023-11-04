@@ -5,7 +5,7 @@ import StyledButton from "../components/LandingPage/Button";
 import Footer from "../components/LandingPage/Footer";
 import Background from "../components/Background";
 import {useDispatch, useSelector} from "react-redux";
-import {setName} from "../state/PlayerSlice";
+import {setUserName} from "../state/PlayerSlice";
 import FindRoomsModal from "../components/modals/FindRoomsModal";
 import JoinRoomModal from "../components/modals/JoinRoomModal";
 import CreateRoomModal from "../components/modals/CreateRoomModal";
@@ -15,7 +15,7 @@ const LandingPage = () => {
     "play" | "find" | "join" | "create" | null
   >(null);
 
-  const playerName = useSelector((state: RootState) => state.player.name);
+  const playerName = useSelector((state: RootState) => state.player.userName!);
   const dispatch = useDispatch();
 
   function isValidName(name: string) {
@@ -134,7 +134,7 @@ const LandingPage = () => {
                     id="name-input"
                     placeholder="Enter Name"
                     value={playerName}
-                    onChange={(e) => dispatch(setName(e.target.value))}
+                    onChange={(e) => dispatch(setUserName(e.target.value))}
                     className="bg-sky-300 border border-white text-white text-md
                             outline-2 outline-white
                             rounded-md block w-full p-2.5"

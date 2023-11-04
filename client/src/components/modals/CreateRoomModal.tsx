@@ -16,7 +16,7 @@ export default function CreateRoomModal({open, onClose,handleGoBack}: JoinRoomMo
   const [roomName, setRoomName] = useState("");
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
   const [playersSize, setPlayersSize] = useState(5);
-  const playerName = useSelector((state: RootState) => state.player.name);
+  const playerName = useSelector((state: RootState) => state.player.userName);
   const casesToHandle = {
     room_create: (data: ResponseData) => console.log("room_create", data.status)
   };

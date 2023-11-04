@@ -17,7 +17,7 @@ type RoomType = {
 };
 
 export default function Room({room, roomName}: RoomProps) {
-  const playerName = useSelector((state: RootState) => state.player.name);
+  const playerName = useSelector((state: RootState) => state.player.userName);
   const isRoomFull = room.players.length === room.roomMaxCapacity;
   const [isJoiningRoom, setIsJoiningRoom] = useState(false);
 
