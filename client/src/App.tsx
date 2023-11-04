@@ -17,10 +17,17 @@ function App() {
       dispatch(changeGameState(value.roomInfo));
     }
 
+    function onPlayerUpdate(value: any) {
+      console.log("player obj: ", value);
+    }
+
     socket.on("room_message", onRoomMessage);
+
+    socket.on("player_update", onPlayerUpdate);
 
     return () => {
       socket.off("room_message");
+      socket.off("player_update");
     };
   }, [room]);
 
