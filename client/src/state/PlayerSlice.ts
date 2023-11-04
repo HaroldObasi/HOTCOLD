@@ -18,10 +18,11 @@ export const playerSlice = createSlice({
   reducers: {
     setUserName: (state, action: PayloadAction<string>) => {
       state.userName = action.payload;
-    }
+    },
+    changePlayerObject: (state, action: PayloadAction<any>) => action.payload
   }
 });
 
-export const {setUserName} = playerSlice.actions;
+export const {setUserName, changePlayerObject} = playerSlice.actions;
 
 export default playerSlice.reducer;

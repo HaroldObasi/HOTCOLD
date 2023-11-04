@@ -5,6 +5,7 @@ import {RootState} from "./state/PlayerStore";
 import GamePage from "./pages/GamePage";
 import {useSelector, useDispatch} from "react-redux";
 import {changeGameState} from "./state/GameSlice";
+import {changePlayerObject} from "./state/PlayerSlice";
 import {socket} from "./socket";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
 
     function onPlayerUpdate(value: any) {
       console.log("player obj: ", value);
+      dispatch(changePlayerObject(value.player));
     }
 
     socket.on("room_message", onRoomMessage);
