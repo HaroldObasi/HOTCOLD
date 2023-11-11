@@ -62,6 +62,11 @@ export class GameRoom {
     }
     this.players.push(player);
     socket.join(this.id);
+    
+    io.to(player.id).emit("player_update", {
+      player
+    });
+
     if (this.players.length > 1 && !this.targetWord) {
       this.startGame();
     }

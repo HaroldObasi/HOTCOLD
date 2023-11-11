@@ -21,7 +21,7 @@ export default function JoinRoomModal({
       console.log("join_room_with_id", data.status)
   };
 
-  useSocketMessage("ROOM_MESSAGE", casesToHandle);
+  useSocketMessage("room_message", casesToHandle);
 
   function handleRoomJoin() {
     if (roomCode.trim().length === 0) {
