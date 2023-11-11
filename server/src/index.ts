@@ -33,5 +33,4 @@ initializeSocketEvents(io);
 const PORT: number = 5000;
 httpServer.listen(PORT, () => {
   console.log("http server on port: ", PORT);
-  console.log("changed the port again");
 });
