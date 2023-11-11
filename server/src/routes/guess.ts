@@ -7,6 +7,6 @@ route.post("/all", (req, res) => {
   console.log("heloo world");
 });
 
-route.post("rateGuess", rateGuess);
+route.post("/rateGuess", rateGuess);
 
 export {route as guessRoutes};

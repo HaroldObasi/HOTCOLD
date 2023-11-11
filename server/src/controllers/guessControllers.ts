@@ -1,16 +1,8 @@
 import {Request, Response} from "express";
 import {io} from "../index.js";
 import {RoomList} from "../custom-classes/RoomList.js";
-import {GameRoom} from "custom-classes/GameRoom.js";
 
 export const rateGuess = (req: Request, res: Response) => {
-  //we need to get the room that the chat was sent in
-  //body = {
-  // "messageIndex" : 0,
-  // "rating": "COLDER",
-  // "roomId" : "2828-2929"
-  //   }
-
   const {messageIndex, rating, roomId} = req.body;
   const targetRoom = RoomList.rooms[roomId];
 
@@ -20,15 +12,18 @@ export const rateGuess = (req: Request, res: Response) => {
     });
   }
 
-  //we need the index of the message to check the messages array in the Game
+  //we need the index of the message to access the message from the messages array in the Game
   //we need to change the rating of the message
   targetRoom.messages[messageIndex].rating = rating;
 
   //we need to send the updated room to all the clients in that room
-
   io.to(targetRoom.id).emit("room_message", {
     type: "GUESS_RATING_UPDATE",
     message: `Rating Changed`,
     roomInfo: targetRoom
+  });
+
+  return res.status(200).json({
+    message: "Rating changed successfully!"
   });
 };
