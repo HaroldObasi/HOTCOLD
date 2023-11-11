@@ -23,8 +23,8 @@ const ChatBox = (props: Props) => {
     socket.emit("send_message", data);
   }
   return (
-    <div className="bg-slate-200 flex-1 relative">
-      chat
+    <div className="bg-slate-200 flex-1 relative px-3">
+      <p className="text-center my-2">Chat</p>
       <ul className="font-denk">
         {room.messages.map((item: any) => {
           return (

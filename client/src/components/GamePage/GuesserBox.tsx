@@ -9,7 +9,6 @@ const GuesserBox = (props: Props) => {
   const room = useSelector((state: RootState) => state.game.room);
   return (
     <ul className="font-denk">
-      Guesser
       {room.messages.map((item: any) => {
         return <li>{item.message}</li>;
       })}

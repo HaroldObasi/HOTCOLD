@@ -11,8 +11,8 @@ const GuessBox = (props: Props) => {
   const player = useSelector((state: RootState) => state.player);
 
   return (
-    <div className="bg-slate-200 basis-1/2">
-      guesses
+    <div className="bg-slate-200 basis-1/2 px-3 text-center">
+      <p className="text-center my-2">Guesses</p>
       {player.role === "WORD_GUESSER" ? (
         <GuesserBox />
       ) : player.role === "WORD_PICKER" ? (
