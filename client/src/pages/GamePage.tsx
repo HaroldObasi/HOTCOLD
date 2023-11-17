@@ -46,8 +46,16 @@ const GamePage = (props: Props) => {
         <div className="flex gap-x-2 mx-3 h-[300px] max-h-[300px]">
           <PlayerList />
 
-          <GuessBox />
-          <ChatBox />
+          {room.started === true ? (
+            <>
+              <GuessBox />
+              <ChatBox />
+            </>
+          ) : (
+            <div className="flex-1 bg-slate-200 flex justify-center items-center">
+              <p className="md:text-2xl">Waiting for players to join</p>
+            </div>
+          )}
         </div>
       </Background>
     </div>
