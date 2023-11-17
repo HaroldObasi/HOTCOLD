@@ -29,6 +29,8 @@ export class GameRoom {
   roomMaxCapacity: number;
   messages: Message[];
   rounds: number;
+  started: boolean = false;
+  private selected: Set<number> = new Set();
 
   constructor(
     id: string,
@@ -60,9 +62,10 @@ export class GameRoom {
     if (this.players.find((p) => p.id === player.id)) {
       return false;
     }
+
     this.players.push(player);
     socket.join(this.id);
-    
+
     io.to(player.id).emit("player_update", {
       player
     });
@@ -114,14 +117,34 @@ export class GameRoom {
     });
   }
 
+  chooseNewPicker() {}
+
   startGame() {
     this.targetWord = "apple";
+    this.started = true;
     io.to(this.id).emit("room_message", {
       type: "GAME_STARTED",
       message: "Game has started",
       timer: "40s",
       roomInfo: this
     });
+
+    var initTime = 20;
+    const timerInterval = setInterval(() => {
+      if (initTime <= 0) {
+        clearInterval(timerInterval);
+      }
+      io.to(this.id).emit("room_message", {
+        type: "GAME_TIMER_TICK",
+        message: "Timer Ticking",
+        timer: initTime
+      });
+
+      initTime--;
+    }, 1000);
+
+    //choose new game host / word picker
+
     console.log("The game has been started");
     //GENERAL GAME FLOW
     //decide who is going to be the word picker, should be this.host
