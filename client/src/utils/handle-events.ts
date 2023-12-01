@@ -1,21 +1,29 @@
-const handleGameStarted = () => {
-  console.log("The game has been started");
+import {toast} from "react-toastify";
+import {changeGameState} from "../state/GameSlice";
+
+const handleGameStarted = (dispatch: any, room: any) => {
+  toast.success(room.message);
+  dispatch(changeGameState(room.roomInfo));
 };
 
-const handleTimerTick = () => {
-  console.log("The timer has been started");
+const handleTimerTick = (dispatch: any, room: any) => {
+  console.log("ticker: ", room);
+  toast.info(`${room.timer}, seconds left`, {autoClose: 1000});
+  dispatch(changeGameState(room.roomInfo));
 };
 
-const handleRoomMessage = () => {
-  console.log("A new message has been sent by someone");
+const handleRoomMessage = (dispatch: any, room: any) => {
+  toast.success(room.message);
+  dispatch(changeGameState(room.roomInfo));
 };
 
-const handleRoomUpdate = () => {
-  console.log("Someone has joined the room");
+const handleRoomUpdate = (dispatch: any, room: any) => {
+  toast.success(room.message);
+  dispatch(changeGameState(room.roomInfo));
 };
 
 type Events = {
-  [key: string]: any;
+  [key: string]: (dispatch: any, room: any) => void;
 };
 
 export const events: Events = {
