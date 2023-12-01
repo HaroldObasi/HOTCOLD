@@ -44,7 +44,9 @@ const GamePage = (props: Props) => {
         </h1>
 
         <div className="px-3 ">
-          <div className="bg-slate-200 mb-2 py-1 p-2">This is a timer</div>
+          <div className="bg-slate-200 mb-2 py-1 p-2">
+            Timer: {room.timer || (room.timer >= 0 && <>{room.timer}</>)}
+          </div>
           <div className="flex gap-x-2  h-[300px] max-h-[300px]">
             <PlayerList />
 

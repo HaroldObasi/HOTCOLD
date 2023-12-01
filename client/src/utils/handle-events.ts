@@ -1,5 +1,5 @@
 import {toast} from "react-toastify";
-import {changeGameState} from "../state/GameSlice";
+import {changeGameState, changeGameTimer} from "../state/GameSlice";
 
 const handleGameStarted = (dispatch: any, room: any) => {
   toast.success(room.message);
@@ -8,8 +8,7 @@ const handleGameStarted = (dispatch: any, room: any) => {
 
 const handleTimerTick = (dispatch: any, room: any) => {
   console.log("ticker: ", room);
-  toast.info(`${room.timer}, seconds left`, {autoClose: 1000});
-  dispatch(changeGameState(room.roomInfo));
+  dispatch(changeGameTimer(room.timer));
 };
 
 const handleRoomMessage = (dispatch: any, room: any) => {
