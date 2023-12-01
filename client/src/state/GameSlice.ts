@@ -14,10 +14,14 @@ export const gameSlice = createSlice({
   reducers: {
     changeGameState: (state, action: PayloadAction<any>) => {
       state.room = action.payload;
+    },
+    changeGameTimer: (state, action: PayloadAction<any>) => {
+      console.log("This is the action payloaf: ", action.payload);
+      state.room.timer = action.payload;
     }
   }
 });
 
-export const {changeGameState} = gameSlice.actions;
+export const {changeGameState, changeGameTimer} = gameSlice.actions;
 
 export default gameSlice.reducer;

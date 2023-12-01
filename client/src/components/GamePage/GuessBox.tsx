@@ -12,7 +12,7 @@ const GuessBox = (props: Props) => {
 
   return (
     <div className="bg-slate-200 basis-1/2 px-3 text-center">
-      <p className="text-center my-2">Guesses</p>
+      <p className="text-center my-2">Word to guess: {room.targetWord}</p>
       {player.role === "WORD_GUESSER" ? (
         <GuesserBox />
       ) : player.role === "WORD_PICKER" ? (

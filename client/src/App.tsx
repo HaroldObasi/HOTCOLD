@@ -7,6 +7,9 @@ import {useSelector, useDispatch} from "react-redux";
 import {changeGameState} from "./state/GameSlice";
 import {changePlayerObject} from "./state/PlayerSlice";
 import {socket} from "./socket";
+import {events} from "./utils/handle-events";
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const room = useSelector((state: RootState) => state.game.room);
@@ -14,8 +17,8 @@ function App() {
 
   useEffect(() => {
     function onRoomMessage(value: any) {
-      console.log("room message: ", value);
-      dispatch(changeGameState(value.roomInfo));
+      const func = events[value.type];
+      func(dispatch, value);
     }
 
     function onPlayerUpdate(value: any) {
@@ -24,7 +27,6 @@ function App() {
     }
 
     socket.on("room_message", onRoomMessage);
-
     socket.on("player_update", onPlayerUpdate);
 
     return () => {
@@ -43,6 +45,7 @@ function App() {
           ></Route>
         </Routes>
       </BrowserRouter>
+      <ToastContainer />
     </main>
   );
 }
