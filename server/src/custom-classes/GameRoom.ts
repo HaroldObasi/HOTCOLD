@@ -87,6 +87,7 @@ export class GameRoom {
     this.host = null;
     this.messages = [];
     this.targetWord = "";
+    this.started = false;
   }
 
   removePlayer(playerId: string): GameRoom | undefined {
