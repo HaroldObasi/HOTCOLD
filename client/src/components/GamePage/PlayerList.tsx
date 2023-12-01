@@ -10,9 +10,10 @@ const PlayerList = (props: Props) => {
     <div className=" w-[150px]">
       <h3 className="mb-3">Player list</h3>
       <ul>
-        {room.players.map((item: any) => {
+        {room.players.map((item: any, index: number) => {
           return (
             <li
+              key={index}
               className={`font-light text-center mb-2 bg-sky-100 rounded-md px-2 py-1 text-black ${
                 item.role === "WORD_PICKER" && "border-4 border-[#FFF500]"
               }`}
