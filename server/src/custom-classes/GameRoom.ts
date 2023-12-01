@@ -137,7 +137,8 @@ export class GameRoom {
       io.to(this.id).emit("room_message", {
         type: "GAME_TIMER_TICK",
         message: "Timer Ticking",
-        timer: initTime
+        timer: initTime,
+        roomInfo: this
       });
 
       initTime--;
