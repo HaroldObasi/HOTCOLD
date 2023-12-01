@@ -82,6 +82,13 @@ export class GameRoom {
     return true;
   }
 
+  resetGameRoom() {
+    this.players = [];
+    this.host = null;
+    this.messages = [];
+    this.targetWord = "";
+  }
+
   removePlayer(playerId: string): GameRoom | undefined {
     let found: boolean = false;
 
@@ -92,6 +99,11 @@ export class GameRoom {
       }
       return true;
     });
+
+    if (this.players.length < 1) {
+      console.log("The room is empty");
+      this.resetGameRoom();
+    }
 
     if (found) {
       return this;
