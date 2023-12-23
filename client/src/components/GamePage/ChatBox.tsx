@@ -34,6 +34,7 @@ const ChatBox = (props: Props) => {
                   senderName={item.sender.userName}
                   rating={item.rating}
                   message={item.message}
+                  correct={item.correct}
                 />
               </li>
             );
