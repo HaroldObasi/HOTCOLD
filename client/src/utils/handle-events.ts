@@ -11,7 +11,6 @@ const handleTimerTick = (dispatch: any, room: any) => {
 };
 
 const handleRoomMessage = (dispatch: any, room: any) => {
-  toast.success(room.message);
   dispatch(changeGameState(room.roomInfo));
 };
 
