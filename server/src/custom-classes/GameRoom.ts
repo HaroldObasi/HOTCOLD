@@ -121,13 +121,35 @@ export class GameRoom {
     this.roomMaxCapacity = newCapacity;
   }
 
+  verifyGuess(word: string): Boolean {
+    if (word.toLowerCase().trim() === this.targetWord) {
+      return true;
+    }
+
+    return false;
+  }
+
   sendMessage(message: Message) {
-    this.messages.push(message);
-    io.to(this.id).emit("room_message", {
-      type: "NEW_ROOM_MESSAGE",
-      message: `${message.sender.userName} sent a message: ${message.message}`,
-      roomInfo: this
-    });
+    const isCorrect = this.verifyGuess(message.message);
+
+    if (isCorrect) {
+      message.correct = true;
+      this.messages.push(message);
+
+      console.log("THE GUESS IS CORRECT");
+      io.to(this.id).emit("room_message", {
+        type: "NEW_ROOM_MESSAGE_WINNER",
+        message: `${message.sender.userName} guessed the word correctly`,
+        roomInfo: this
+      });
+    } else {
+      this.messages.push(message);
+      io.to(this.id).emit("room_message", {
+        type: "NEW_ROOM_MESSAGE",
+        message: `${message.sender.userName} sent a message: ${message.message}`,
+        roomInfo: this
+      });
+    }
   }
 
   chooseNewPicker() {}
