@@ -12,7 +12,7 @@ const PickerBox = (props: Props) => {
     <ul className="font-denk">
       {room.messages.map((item: any, index: number) => {
         return (
-          <li className="w-full px-5">
+          <li className="w-full px-5 py-3">
             <div className="w-full flex items-center justify-between">
               <Button messageIndex={index} rating="COLDER" />
               <Button messageIndex={index} rating="COLD" />
