@@ -9,10 +9,11 @@ type Props = {
 };
 
 const Button = (props: Props) => {
+  const apiUrl = import.meta.env.VITE_SOCKET_IO_URL || "http://localhost:5000";
   const room = useSelector((state: RootState) => state.game.room);
 
   const handleRate = async () => {
-    await axios.post("http://localhost:5000/api/guess/rateGuess", {
+    await axios.post(`${apiUrl}/api/guess/rateGuess`, {
       messageIndex: props.messageIndex,
       rating: props.rating,
       roomId: room.id

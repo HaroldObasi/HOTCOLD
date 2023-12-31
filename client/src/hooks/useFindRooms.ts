@@ -13,9 +13,12 @@ export default function useFindRooms(visible: boolean) {
   const [loading, setLoading] = useState(false);
 
   const fetchRooms = async () => {
+    const apiUrl =
+      import.meta.env.VITE_SOCKET_IO_URL || "http://localhost:5000";
     setLoading(true);
+    
     try {
-      const {data} = await axios.get("http://localhost:5000/api/rooms/all");
+      const {data} = await axios.get(`${apiUrl}/api/rooms/all`);
       setRoomsData(data.rooms);
       setLoading(false);
     } catch (error) {
