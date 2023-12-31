@@ -11,6 +11,10 @@ const handleTimerTick = (dispatch: any, room: any) => {
 };
 
 const handleRoomMessage = (dispatch: any, room: any) => {
+  dispatch(changeGameState(room.roomInfo));
+};
+
+const handleCorrectGuess = (dispatch: any, room: any) => {
   toast.success(room.message);
   dispatch(changeGameState(room.roomInfo));
 };
@@ -33,5 +37,6 @@ export const events: Events = {
   GAME_TIMER_TICK: handleTimerTick,
   ROOM_UPDATE: handleRoomUpdate,
   NEW_ROOM_MESSAGE: handleRoomMessage,
-  GUESS_RATING_UPDATE: handleGuessRated
+  GUESS_RATING_UPDATE: handleGuessRated,
+  NEW_ROOM_MESSAGE_WINNER: handleCorrectGuess
 };

@@ -23,21 +23,24 @@ const ChatBox = (props: Props) => {
     socket.emit("send_message", data);
   }
   return (
-    <div className="bg-slate-200 flex-1 relative px-3">
-      <p className="text-center my-2">Chat</p>
-      <ul className="font-denk">
-        {room.messages.map((item: any) => {
-          return (
-            <li>
-              <Message
-                senderName={item.sender.userName}
-                rating={item.rating}
-                message={item.message}
-              />
-            </li>
-          );
-        })}
-      </ul>
+    <div className="bg-slate-200 flex-1 flex flex-col relative">
+      <div className="px-3 overflow-auto">
+        <p className="text-center my-2">Chat</p>
+        <ul className="font-denk">
+          {room.messages.map((item: any) => {
+            return (
+              <li>
+                <Message
+                  senderName={item.sender.userName}
+                  rating={item.rating}
+                  message={item.message}
+                  correct={item.correct}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      </div>
       {player.role === "WORD_GUESSER" && (
         <div className="absolute bottom-0 w-full flex gap-x-1">
           <input
