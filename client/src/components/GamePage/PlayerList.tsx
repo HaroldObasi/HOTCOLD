@@ -1,10 +1,7 @@
-import React from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "../../state/PlayerStore";
 
-type Props = {};
-
-const PlayerList = (props: Props) => {
+const PlayerList = () => {
   const room = useSelector((state: RootState) => state.game.room);
   return (
     <div className=" w-[150px]">

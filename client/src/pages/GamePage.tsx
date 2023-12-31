@@ -1,31 +1,12 @@
-import React, {useState} from "react";
-import {socket} from "../socket";
 import {useSelector} from "react-redux";
 import {RootState} from "../state/PlayerStore";
 import Background from "../components/Background";
-import Message from "../components/GamePage/Message";
 import PlayerList from "../components/GamePage/PlayerList";
 import ChatBox from "../components/GamePage/ChatBox";
 import GuessBox from "../components/GamePage/GuessBox";
 
-type Props = {};
-
-const GamePage = (props: Props) => {
+const GamePage = () => {
   const room = useSelector((state: RootState) => state.game.room);
-  const player = useSelector((state: RootState) => state.player);
-  const [guess, setGuess] = useState<string>("");
-
-  function handleSendMessage() {
-    const data = {
-      sender: player,
-      message: guess,
-      timeSent: Date.now(),
-      rating: null,
-      correct: false,
-      roomId: player.roomId
-    };
-    socket.emit("send_message", data);
-  }
 
   return (
     <div className="font-dela">
