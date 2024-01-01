@@ -155,10 +155,33 @@ export class GameRoom {
     }
   }
 
-  chooseNewPicker() {}
-
-  runRound() {
+  // This function takes a cb, which will be run every 1s for length number of seconds
+  async serialRunner(cb: (i: number) => void, length: number, interval = 1000) {
     this.targetWord = "apple";
+    while (length >= 0) {
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(cb(length));
+        }, interval);
+      });
+      length--;
+    }
+  }
+
+  sendTimerTick(i: number) {
+    console.log("broadcasting timer: ", i);
+    io.to(this.id).emit("room_message", {
+      type: "GAME_TIMER_TICK",
+      message: "Timer Ticking",
+      timer: i,
+      roomInfo: this
+    });
+  }
+
+  async startGame() {
+    //
+    this.started = true;
+    console.log("The game has been started");
     io.to(this.id).emit("room_message", {
       type: "GAME_STARTED",
       message: `Round ${this.currentRound} has started`,
@@ -166,30 +189,9 @@ export class GameRoom {
       roomInfo: this
     });
 
-    var initTime = 20;
-    const timerInterval = setInterval(() => {
-      if (initTime <= 0) {
-        clearInterval(timerInterval);
-      }
-      io.to(this.id).emit("room_message", {
-        type: "GAME_TIMER_TICK",
-        message: "Timer Ticking",
-        timer: initTime,
-        roomInfo: this
-      });
-
-      initTime--;
-    }, 1000);
-  }
-
-  startGame() {
-    //
-    this.started = true;
-    console.log("The game has been started");
-
     while (this.currentRound <= this.maxRounds) {
-      this.runRound();
-      this.currentRound += 1;
+      await this.serialRunner(this.sendTimerTick.bind(this), 3);
+      this.currentRound++;
     }
 
     console.log("The game has ended");
