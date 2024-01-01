@@ -1,12 +1,10 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "../../state/PlayerStore";
 import Message from "./Message";
 import {socket} from "../../socket";
 
-type Props = {};
-
-const ChatBox = (props: Props) => {
+const ChatBox = () => {
   const room = useSelector((state: RootState) => state.game.room);
   const player = useSelector((state: RootState) => state.player);
   const [guess, setGuess] = useState<string>("");

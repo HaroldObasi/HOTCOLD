@@ -19,7 +19,7 @@ export const playerSlice = createSlice({
     setUserName: (state, action: PayloadAction<string>) => {
       state.userName = action.payload;
     },
-    changePlayerObject: (state, action: PayloadAction<any>) => action.payload
+    changePlayerObject: (_state, action: PayloadAction<any>) => action.payload
   }
 });
 

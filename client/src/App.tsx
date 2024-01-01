@@ -4,7 +4,6 @@ import LandingPage from "./pages/LandingPage";
 import {RootState} from "./state/PlayerStore";
 import GamePage from "./pages/GamePage";
 import {useSelector, useDispatch} from "react-redux";
-import {changeGameState} from "./state/GameSlice";
 import {changePlayerObject} from "./state/PlayerSlice";
 import {socket} from "./socket";
 import {events} from "./utils/handle-events";

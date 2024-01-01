@@ -1,12 +1,9 @@
-import React from "react";
 import GuesserBox from "./GuesserBox";
 import PickerBox from "./PickerBox";
 import {useSelector} from "react-redux";
 import {RootState} from "../../state/PlayerStore";
 
-type Props = {};
-
-const GuessBox = (props: Props) => {
+const GuessBox = () => {
   const room = useSelector((state: RootState) => state.game.room);
   const player = useSelector((state: RootState) => state.player);
 

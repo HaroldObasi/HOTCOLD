@@ -1,12 +1,8 @@
-import React from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "../../state/PlayerStore";
-import Message from "./Message";
 import Button from "./Button";
 
-type Props = {};
-
-const PickerBox = (props: Props) => {
+const PickerBox = () => {
   const room = useSelector((state: RootState) => state.game.room);
   return (
     <ul className="font-denk">
