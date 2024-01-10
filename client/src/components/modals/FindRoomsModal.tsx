@@ -21,7 +21,7 @@ export default function FindRoomsModal({
         <div className=" self-start">
           <button
             type="button"
-            className="mr-2 text-xl text-white drop-shadow-lg"
+            className="mr-2 text-xl text-black drop-shadow-lg"
             onClick={handleGoBack}
           >
             <i className="fa-solid fa-arrow-left"></i>
@@ -38,12 +38,12 @@ export default function FindRoomsModal({
             <div className=" flex items-center">
               <button
                 type="button"
-                className=" text-black text-3xl mr-3"
+                className=" text-white text-3xl mr-3 drop-shadow-[2px_3px_2px_rgba(0,0,0,0.5)] "
                 onClick={refetchRoom}
               >
                 <i className="fa-solid fa-rotate-right"></i>
               </button>
-              <span className=" text-gray-700 drop-shadow-[3px_6px_4px_rgba(0,0,0,0.5)] text-sm ">
+              <span className=" text-gray-700 drop-shadow-[2px_3px_2px_rgba(0,0,0,0.5)] text-sm ">
                 Refresh
               </span>
             </div>
