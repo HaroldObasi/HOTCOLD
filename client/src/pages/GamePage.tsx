@@ -12,20 +12,24 @@ const GamePage = () => {
     <div className="font-dela">
       <Background className="h-screen">
         <h1
-          className="text-center pt-24 p-3 mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-50 
-                       md:text-5xl lg:text-6xl underline underline-offset-[12px]"
+          className="text-center  p-3 mb-4  text-4xl font-extrabold leading-none tracking-wide 
+                       md:text-5xl lg:text-[2rem] lg:tracking-tight text-white 
+                       w-full  lg:pt-16 2xl:pt-40
+                       "
         >
-          <span className="text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-gray-50">
+          <span className="text-transparent  bg-clip-text  bg-gradient-to-b from-orange via-orange to-lightorange">
             HOT
           </span>
-          OR
-          <span className="text-transparent bg-clip-text bg-gradient-to-b from-sky-300 to-gray-50">
+
+          <span className="m-5 lg:m-2">OR</span>
+
+          <span className=" text-transparent bg-clip-text bg-gradient-to-b from-darkblue via-darkblue to-white ">
             COLD
           </span>
         </h1>
 
         <div className="px-3 max-w-screen-2xl mx-auto">
-          <div className="bg-slate-200 mb-2 py-1 p-2">
+          <div className=" mb-2 py-1 p-2 w-full text-center ">
             Timer: {room.timer || (room.timer >= 0 && <>{room.timer}</>)}
           </div>
           <div className="flex gap-x-2  h-[500px] ">
@@ -37,8 +41,10 @@ const GamePage = () => {
                 <ChatBox />
               </div>
             ) : (
-              <div className="flex-1 bg-slate-200 flex justify-center items-center">
-                <p className="md:text-2xl">Waiting for players to join</p>
+              <div className="flex-1 bg-graybg flex justify-center items-center rounded-xl">
+                <p className="md:text-2xl text-darkgray">
+                  Waiting for players to join
+                </p>
               </div>
             )}
           </div>

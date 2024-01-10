@@ -52,17 +52,21 @@ const LandingPage = () => {
 
   return (
     <Background>
-      <main className="justify-center font-dela">
-        <div className="min-h-screen">
+      <main className="font-dela">
+        <div className="flex flex-col items-center min-h-screen">
           <h1
-            className="text-center pt-24 p-3 mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-50 
-                       md:text-5xl lg:text-6xl underline underline-offset-[12px]"
+            className="text-center pt-24 p-3 mb-4 mt-2 text-4xl font-extrabold leading-none tracking-wide 
+                       md:text-5xl lg:text-[4rem]  text-white w-fit
+                       after:block  after:h-[8px] after:bg-white after:mt-[18px] after:rounded-lg after:shadow-[-1px_3px_7px_2px_rgba(0,0,0,0.25)]
+                       "
           >
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-gray-50">
+            <span className="text-transparent  bg-clip-text  bg-gradient-to-b from-orange via-orange to-lightorange">
               HOT
             </span>
-            OR
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-sky-300 to-gray-50">
+
+            <span className="m-5">OR</span>
+
+            <span className=" text-transparent bg-clip-text bg-gradient-to-b from-darkblue via-darkblue to-white ">
               COLD
             </span>
           </h1>
@@ -71,19 +75,26 @@ const LandingPage = () => {
             <StyledButton
               paddingX={"px-24"}
               paddingY={"py-2"}
+              width="240px"
+              aspect="aspect-[60/13]"
               ClickEvent={() => setSelectedModal("play")}
             >
               PLAY!
             </StyledButton>
           </div>
-          <div className="py-12" />
+
+          <div className="mt-10 animate-pulse">
+            <img className="h-24" src="/calltoaction_arrow.png" alt="" />
+          </div>
+
+          <div className="py-8" />
           <div className="flex flex-col justify-center max-w-6xl mx-auto px-6">
-            <div className="grid grid-cols-1 gap-y-12 md:grid-cols-2 md:gap-x-24 ">
-              <div className="text-black drop-shadow-[3px_6px_4px_rgba(0,0,0,0.5)]">
-                <h3 className="pb-6 text-4xl lg:text-5xl xl:text-6xl font-bold">
+            <div className="grid grid-cols-1 gap-y-12 md:grid-cols-2 md:gap-x-52 ">
+              <div className="text-darkgray drop-shadow-[3px_6px_4px_rgba(0,0,0,0.5)]">
+                <h3 className="pb-6 text-4xl lg:text-5xl xl:text-4xl font-bold">
                   How to play?
                 </h3>
-                <div className="text-l lg:text-2xl xl:text-2xl">
+                <div className="text-l lg:text-2xl xl:text-xl tracking-wider ">
                   <p className="leading-relaxed">
                     Browse open rooms below, once you find one click "join".
                   </p>
@@ -96,12 +107,13 @@ const LandingPage = () => {
                   </p>
                 </div>
               </div>
-              <div className="text-black drop-shadow-[3px_6px_4px_rgba(0,0,0,0.5)]">
-                <h3 className="pb-6 text-4xl lg:text-5xl xl:text-6xl font-bold">
+
+              <div className="text-darkgray drop-shadow-[3px_6px_4px_rgba(0,0,0,0.5)]">
+                <h3 className="pb-6 text-4xl lg:text-5xl xl:text-4xl font-bold">
                   About
                 </h3>
-                <div className="text-l lg:text-2xl xl:text-2xl">
-                  <p className="leading-relaxed">
+                <div className="text-l lg:text-2xl xl:text-xl">
+                  <p className="leading-10 tracking-wider">
                     Hot or Cold is a classic party game that involves one person
                     choosing a secret word and providing hints to others by
                     saying "hot" or "cold" based on how close their guesses are
@@ -135,9 +147,9 @@ const LandingPage = () => {
                     placeholder="Enter Name"
                     value={playerName}
                     onChange={(e) => dispatch(setUserName(e.target.value))}
-                    className="bg-sky-300 border border-white text-white text-md
-                            outline-2 outline-white
-                            rounded-md block w-full p-2.5"
+                    className="bg-sky-300 border-none text-darkgray text-md
+                            outline-2 outline-none bg-lightblue
+                            rounded-md block w-full p-2.5 placeholder:text-[rgba(64,64,64,.4)] "
                   />
                 </div>
                 <StyledButton paddingY={"py-3"} ClickEvent={handleFindRooms}>

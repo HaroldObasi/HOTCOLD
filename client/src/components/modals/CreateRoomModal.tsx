@@ -12,7 +12,11 @@ type JoinRoomModalProps = {
   handleGoBack: () => void;
 };
 
-export default function CreateRoomModal({open, onClose,handleGoBack}: JoinRoomModalProps) {
+export default function CreateRoomModal({
+  open,
+  onClose,
+  handleGoBack
+}: JoinRoomModalProps) {
   const [roomName, setRoomName] = useState("");
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
   const [playersSize, setPlayersSize] = useState(5);
@@ -43,17 +47,18 @@ export default function CreateRoomModal({open, onClose,handleGoBack}: JoinRoomMo
       onClose={onClose}
       overlayClassName=" backdrop-blur [&>.relative]:max-w-[500px]"
     >
-      <div className="py-4 px-3 flex items-center">
-        <div className=" self-start pl-2">
-          <button
-            type="button"
-            className="mr-2 text-xl  drop-shadow-lg"
-            onClick={handleGoBack}
-          >
-            <i className="fa-solid fa-arrow-left"></i>
-          </button>
-        </div>
-        <div className=" w-3/4 mx-auto font-denk ">
+      <button
+        type="button"
+        className="mr-2 text-xl  drop-shadow-lg ml-5 mt-5"
+        onClick={handleGoBack}
+      >
+        <i className="fa-solid fa-arrow-left"></i>
+      </button>
+
+      <div id="test2" className="pb-10 flex items-center justify-center ">
+        <div className=" self-start pl-2"></div>
+
+        <div id="test" className=" w-3/4 m-0 font-denk ">
           <h2 className=" capitalize md:text-4xl text-[#2D2D2D] font-bold drop-shadow-[4px_4px_4px_rgba(0,0,0,0.25)] text-center">
             create room
           </h2>

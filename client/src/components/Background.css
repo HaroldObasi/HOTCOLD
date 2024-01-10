@@ -1,25 +1,33 @@
 .gradient-layer {
-    background: linear-gradient(135deg, rgba(0,224,255,1) 0%, rgba(255,183,116,1) 100%);
+  background: linear-gradient(
+    150deg,
+    rgba(95, 217, 254, 1) 0%,
+    rgba(121, 207, 222, 1) 50%,
+    rgba(243, 155, 68, 1) 100%
+  );
 }
 
 .dots-layer {
-    background-image: radial-gradient(circle at 24px 24px, rgba(168, 234, 254, 0.5) 12px, transparent 0);
-    background-size: 48px 48px;
+  background-image: radial-gradient(
+    circle at 24px 30px,
+    rgba(53, 200, 245, 0.46) 20px,
+    transparent 0
+  );
+  background-size: 65px 65px;
 }
 
 .blur-layer {
-    position: relative;
-    z-index: 2;
+  position: relative;
+  z-index: 2;
 }
 
 .blur-layer::after {
-    backdrop-filter: blur(4px);
-    content: '';
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: -1;
+  backdrop-filter: blur(3px);
+  content: "";
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
 }
-
