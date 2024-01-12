@@ -28,7 +28,8 @@ export class GameRoom {
   targetWord: string | null;
   roomMaxCapacity: number;
   messages: Message[];
-  rounds: number;
+  currentRound: number;
+  maxRounds: number;
   started: boolean = false;
   private selected: Set<number> = new Set();
 
@@ -47,6 +48,8 @@ export class GameRoom {
       this.host = players[0];
     }
     this.messages = [];
+    this.currentRound = 1;
+    this.maxRounds = 3;
   }
 
   addPlayer(player: Player, socket: Socket): boolean {
@@ -152,36 +155,49 @@ export class GameRoom {
     }
   }
 
-  chooseNewPicker() {}
-
-  startGame() {
+  // This function takes a cb, which will be run every 1s for length number of seconds
+  async serialRunner(cb: (i: number) => void, length: number, interval = 1000) {
     this.targetWord = "apple";
+    while (length >= 0) {
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(cb(length));
+        }, interval);
+      });
+      length--;
+    }
+  }
+
+  sendTimerTick(i: number) {
+    console.log("broadcasting timer: ", i);
+    io.to(this.id).emit("room_message", {
+      type: "GAME_TIMER_TICK",
+      message: "Timer Ticking",
+      timer: i,
+      roomInfo: this
+    });
+  }
+
+  async startGame() {
+    //
     this.started = true;
+    console.log("The game has been started");
     io.to(this.id).emit("room_message", {
       type: "GAME_STARTED",
-      message: "Game has started",
+      message: `Round ${this.currentRound} has started`,
       timer: "40s",
       roomInfo: this
     });
 
-    var initTime = 20;
-    const timerInterval = setInterval(() => {
-      if (initTime <= 0) {
-        clearInterval(timerInterval);
-      }
-      io.to(this.id).emit("room_message", {
-        type: "GAME_TIMER_TICK",
-        message: "Timer Ticking",
-        timer: initTime,
-        roomInfo: this
-      });
+    while (this.currentRound <= this.maxRounds) {
+      await this.serialRunner(this.sendTimerTick.bind(this), 3);
+      this.currentRound++;
+    }
 
-      initTime--;
-    }, 1000);
+    console.log("The game has ended");
 
     //choose new game host / word picker
 
-    console.log("The game has been started");
     //GENERAL GAME FLOW
     //decide who is going to be the word picker, should be this.host
     //give some words as options to the WordPicker,

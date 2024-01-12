@@ -16,8 +16,10 @@ export const gameSlice = createSlice({
       state.room = action.payload;
     },
     changeGameTimer: (state, action: PayloadAction<any>) => {
-      console.log("This is the action payloaf: ", action.payload);
-      state.room.timer = action.payload;
+      state.room.timer = action.payload.timer;
+
+      // Also uses the opportunity to update the round just incase:
+      state.room.currentRound = action.payload.currentRound;
     }
   }
 });

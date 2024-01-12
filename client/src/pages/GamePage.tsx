@@ -26,7 +26,11 @@ const GamePage = () => {
 
         <div className="px-3 max-w-screen-2xl mx-auto">
           <div className="bg-slate-200 mb-2 py-1 p-2">
-            Timer: {room.timer || (room.timer >= 0 && <>{room.timer}</>)}
+            <p>
+              Round:{room.currentRound} of {room.maxRounds}
+            </p>
+
+            <p>Timer: {room.timer || (room.timer >= 0 && <>{room.timer}</>)}</p>
           </div>
           <div className="flex gap-x-2  h-[500px] ">
             <PlayerList />
