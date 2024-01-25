@@ -69,18 +69,22 @@ export class GameRoom {
     this.players.push(player);
     socket.join(this.id);
 
+
+    // WHY ????
+    // Sending the state of the player to the player that joined the room lol 
     io.to(player.id).emit("player_update", {
       player
     });
 
-    if (this.players.length > 1 && !this.targetWord) {
-      this.startGame();
-    }
     io.to(this.id).emit("room_message", {
       type: "ROOM_UPDATE",
       message: `User: ${player.userName} has joined ${this.id}`,
       roomInfo: this
     });
+
+    if (this.players.length > 1 && !this.targetWord) {
+      this.startGame();
+    }
 
     return true;
   }
@@ -159,6 +163,7 @@ export class GameRoom {
   async serialRunner(cb: (i: number) => void, length: number, interval = 1000) {
     this.targetWord = "apple";
     while (length >= 0) {
+      console.log("the game players (counter): ", this.players);
       await new Promise((resolve) => {
         setTimeout(() => {
           resolve(cb(length));
@@ -169,7 +174,6 @@ export class GameRoom {
   }
 
   sendTimerTick(i: number) {
-    console.log("broadcasting timer: ", i);
     io.to(this.id).emit("room_message", {
       type: "GAME_TIMER_TICK",
       message: "Timer Ticking",
@@ -190,7 +194,26 @@ export class GameRoom {
     });
 
     while (this.currentRound <= this.maxRounds) {
-      await this.serialRunner(this.sendTimerTick.bind(this), 3);
+      //Loop through all the players in the room and give them a chance to be the admin
+
+      for (let i = 0; i < this.players.length; i++) {
+        const currentPlayer = this.players[i];
+        this.host = currentPlayer;
+
+        currentPlayer.role = "WORD_PICKER";
+        this.players[i] = currentPlayer;
+
+        io.to(this.id).emit("room_message", {
+          type: "UPDATE_PLAYER_ROLES",
+          message: `New picker is ${currentPlayer.userName}`,
+          roomInfo: this
+        });
+
+        await this.serialRunner(this.sendTimerTick.bind(this), 7);
+
+        currentPlayer.role = "WORD_GUESSER";
+        this.players[i] = currentPlayer;
+      }
       this.currentRound++;
     }
 
