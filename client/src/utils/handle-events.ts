@@ -1,5 +1,9 @@
 import {toast} from "react-toastify";
-import {changeGameState, changeGameTimer} from "../state/GameSlice";
+import {
+  changeGameState,
+  changeGameTimer,
+  changePlayerRoles
+} from "../state/GameSlice";
 
 const handleGameStarted = (dispatch: any, room: any) => {
   toast.success(room.message);
@@ -7,7 +11,6 @@ const handleGameStarted = (dispatch: any, room: any) => {
 };
 
 const handleTimerTick = (dispatch: any, room: any) => {
-
   console.log("tick tock: ", room);
   dispatch(
     changeGameTimer({
@@ -15,6 +18,16 @@ const handleTimerTick = (dispatch: any, room: any) => {
       currentRound: room.roomInfo.currentRound
     })
   );
+};
+
+const handlePlayerRolesUpdate = (dispatch: any, room: any) => {
+  dispatch(
+    changePlayerRoles({
+      players: room.roomInfo.players,
+      currentRound: room.roomInfo.currentRound
+    })
+  );
+  toast.success(room.message);
 };
 
 const handleRoomMessage = (dispatch: any, room: any) => {
@@ -45,5 +58,6 @@ export const events: Events = {
   ROOM_UPDATE: handleRoomUpdate,
   NEW_ROOM_MESSAGE: handleRoomMessage,
   GUESS_RATING_UPDATE: handleGuessRated,
-  NEW_ROOM_MESSAGE_WINNER: handleCorrectGuess
+  NEW_ROOM_MESSAGE_WINNER: handleCorrectGuess,
+  UPDATE_PLAYER_ROLES: handlePlayerRolesUpdate
 };

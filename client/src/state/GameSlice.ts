@@ -20,10 +20,21 @@ export const gameSlice = createSlice({
 
       // Also uses the opportunity to update the round just incase:
       state.room.currentRound = action.payload.currentRound;
+
+      //Also update the state of the players just in case the player changes :)
+    },
+
+    //Handles an event where a players
+    changePlayerRoles: (state, action: PayloadAction<any>) => {
+      state.room.players = action.payload.players;
+
+      // Also uses the opportunity to update the round just incase:
+      state.room.currentRound = action.payload.currentRound;
     }
   }
 });
 
-export const {changeGameState, changeGameTimer} = gameSlice.actions;
+export const {changeGameState, changeGameTimer, changePlayerRoles} =
+  gameSlice.actions;
 
 export default gameSlice.reducer;
