@@ -73,7 +73,7 @@ export class GameRoom {
     // WHY ????
     // Sending the state of the player to the player that joined the room lol 
     io.to(player.id).emit("player_update", {
-      player
+      player: player
     });
 
     io.to(this.id).emit("room_message", {
@@ -163,7 +163,6 @@ export class GameRoom {
   async serialRunner(cb: (i: number) => void, length: number, interval = 1000) {
     this.targetWord = "apple";
     while (length >= 0) {
-      console.log("the game players (counter): ", this.players);
       await new Promise((resolve) => {
         setTimeout(() => {
           resolve(cb(length));
@@ -203,16 +202,28 @@ export class GameRoom {
         currentPlayer.role = "WORD_PICKER";
         this.players[i] = currentPlayer;
 
+        //Inform all players of new roles after rep
         io.to(this.id).emit("room_message", {
           type: "UPDATE_PLAYER_ROLES",
           message: `New picker is ${currentPlayer.userName}`,
           roomInfo: this
         });
 
+        console.log("word picker: ", currentPlayer);
+
+        //Inform concerned player with new role
+        io.to(currentPlayer.id).emit("player_update", {
+          player: currentPlayer
+        });
+
         await this.serialRunner(this.sendTimerTick.bind(this), 7);
 
         currentPlayer.role = "WORD_GUESSER";
         this.players[i] = currentPlayer;
+        //Inform concerned player with new role
+        io.to(currentPlayer.id).emit("player_update", {
+          player: currentPlayer
+        });
       }
       this.currentRound++;
     }

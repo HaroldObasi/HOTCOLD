@@ -11,7 +11,6 @@ const handleGameStarted = (dispatch: any, room: any) => {
 };
 
 const handleTimerTick = (dispatch: any, room: any) => {
-  console.log("tick tock: ", room);
   dispatch(
     changeGameTimer({
       timer: room.timer,
