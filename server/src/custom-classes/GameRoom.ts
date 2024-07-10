@@ -1,6 +1,7 @@
 import {Player} from "./Player.js";
 import {io} from "../index.js";
 import {Socket} from "socket.io";
+import wordBank from "../data/wordBank.json";
 
 //TODO create a new method that can randomly pick someone to be be the WORD_PICKER.
 //obviously keeping in mind who has already been a WORD_PICKER for that round
@@ -31,6 +32,8 @@ export class GameRoom {
   currentRound: number;
   maxRounds: number;
   started: boolean = false;
+  paused: boolean = false;
+  targetWordOptions: string[];
   private selected: Set<number> = new Set();
 
   constructor(
@@ -69,9 +72,8 @@ export class GameRoom {
     this.players.push(player);
     socket.join(this.id);
 
-
     // WHY ????
-    // Sending the state of the player to the player that joined the room lol 
+    // Sending the state of the player to the player that joined the room lol
     io.to(player.id).emit("player_update", {
       player: player
     });
@@ -181,10 +183,34 @@ export class GameRoom {
     });
   }
 
+  //method to shuffle target words array
+  shuffleTargetWordOptions() {
+    const getRandomWords = (words: string[], count: number): string[] => {
+      // Shuffle array
+      const shuffled = words.sort(() => 0.5 - Math.random());
+      // Get sub-array of first n elements after shuffled
+      return shuffled.slice(0, count);
+    };
+
+    this.targetWordOptions = getRandomWords(wordBank, 4);
+    console.log("Target Word options: ", this.targetWordOptions);
+    this.paused = true;
+  }
+
+  // create method to pause / unpause game
+  selectTargetWord(index: number) {
+    console.log("Target Word options: ", this.targetWordOptions);
+
+    this.targetWord = this.targetWordOptions[index];
+
+    console.log("selected word: ", this.targetWord);
+    this.paused = false;
+  }
+
   async startGame() {
     //
     this.started = true;
-    console.log("The game has been started");
+    console.log("The game has been started, ", this.id);
     io.to(this.id).emit("room_message", {
       type: "GAME_STARTED",
       message: `Round ${this.currentRound} has started`,
@@ -209,13 +235,31 @@ export class GameRoom {
           roomInfo: this
         });
 
-        console.log("word picker: ", currentPlayer);
+        //Give options to host to pick words
+        //select random 6 words
 
         //Inform concerned player with new role
         io.to(currentPlayer.id).emit("player_update", {
           player: currentPlayer
         });
 
+        // Give player chance to choose a word, use an infinite loop, or timer, break when game state changes ?
+        this.shuffleTargetWordOptions();
+        console.log("GAME PAUSED, AWAITING USER TARGET WORD SELECTION");
+
+        await new Promise<void>((resolve) => {
+          const checkPaused = () => {
+            if (!this.paused) {
+              resolve();
+            } else {
+              setTimeout(checkPaused, 100); // Check every 100ms
+            }
+          };
+          checkPaused();
+        });
+        console.log("GAME UNPAUSED");
+
+        // Start Timer
         await this.serialRunner(this.sendTimerTick.bind(this), 7);
 
         currentPlayer.role = "WORD_GUESSER";
