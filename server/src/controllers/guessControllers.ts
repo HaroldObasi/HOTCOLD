@@ -16,7 +16,8 @@ export const rateGuess = (req: Request, res: Response) => {
   //we need to change the rating of the message
   targetRoom.messages[messageIndex].rating = rating;
 
-  //we need to send the updated room to all the clients in that room
+  // we need to send the updated room to all the clients in that room
+  // why not let the GameRoom class handle this ?
   io.to(targetRoom.id).emit("room_message", {
     type: "GUESS_RATING_UPDATE",
     message: `Rating Changed`,
@@ -25,5 +26,23 @@ export const rateGuess = (req: Request, res: Response) => {
 
   return res.status(200).json({
     message: "Rating changed successfully!"
+  });
+};
+
+export const selectTargetWord = (req: Request, res: Response) => {
+  const {wordIndex, roomId} = req.body;
+
+  const targetRoom = RoomList.rooms[roomId];
+
+  if (!targetRoom) {
+    return res.status(404).json({
+      message: "Room Not Found"
+    });
+  }
+
+  targetRoom.selectTargetWord(wordIndex);
+
+  return res.status(200).json({
+    message: "target word selected"
   });
 };
