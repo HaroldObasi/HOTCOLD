@@ -56,6 +56,7 @@ export class RoomList {
     player: Player,
     socket: Socket
   ): GameRoom | undefined | null {
+    // Room with roomId doesn't exist
     if (!RoomList.rooms.hasOwnProperty(roomId)) return;
 
     const targetRoom = RoomList.rooms[roomId];
