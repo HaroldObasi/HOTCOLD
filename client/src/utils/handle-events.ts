@@ -5,6 +5,7 @@ import {
   changePlayerRoles
 } from "../state/GameSlice";
 import {Dispatch} from "react";
+import {setModal, setTargetWordOptions} from "../state/uiSlice";
 
 const handleGameStarted = (dispatch: Dispatch<any>, room: any) => {
   toast.success(room.message);
@@ -51,6 +52,8 @@ const handleGuessRated = (dispatch: any, room: any) => {
 const handlePickTargetWord = (dispatch: Dispatch<any>, event: any) => {
   //trigger the modal
   //show the options on the modal for the word picker to select from
+  dispatch(setModal(true));
+  dispatch(setTargetWordOptions(event.message.words));
   console.log("pick a word: ", event);
 };
 
