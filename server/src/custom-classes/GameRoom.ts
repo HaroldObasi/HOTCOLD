@@ -250,7 +250,7 @@ export class GameRoom {
           type: "PICK_TARGET_WORD",
           message: {
             message: "Pick a target word",
-            words: [this.targetWordOptions]
+            words: this.targetWordOptions
           }
         });
 
