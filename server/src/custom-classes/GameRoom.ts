@@ -245,8 +245,16 @@ export class GameRoom {
 
         // Give player chance to choose a word, use an infinite loop, or timer, break when game state changes ?
         this.shuffleTargetWordOptions();
-        console.log("GAME PAUSED, AWAITING USER TARGET WORD SELECTION");
 
+        io.to(currentPlayer.id).emit("room_message", {
+          type: "PICK_TARGET_WORD",
+          message: {
+            message: "Pick a target word",
+            words: [this.targetWordOptions]
+          }
+        });
+
+        console.log("GAME PAUSED, AWAITING USER TARGET WORD SELECTION");
         await new Promise<void>((resolve) => {
           const checkPaused = () => {
             if (!this.paused) {
