@@ -4,8 +4,9 @@ import {
   changeGameTimer,
   changePlayerRoles
 } from "../state/GameSlice";
+import {Dispatch} from "react";
 
-const handleGameStarted = (dispatch: any, room: any) => {
+const handleGameStarted = (dispatch: Dispatch<any>, room: any) => {
   toast.success(room.message);
   dispatch(changeGameState(room.roomInfo));
 };
@@ -47,6 +48,12 @@ const handleGuessRated = (dispatch: any, room: any) => {
   dispatch(changeGameState(room.roomInfo));
 };
 
+const handlePickTargetWord = (dispatch: Dispatch<any>, event: any) => {
+  //trigger the modal
+  //show the options on the modal for the word picker to select from
+  console.log("pick a word: ", event);
+};
+
 type Events = {
   [key: string]: (dispatch: any, room: any) => void;
 };
@@ -58,5 +65,6 @@ export const events: Events = {
   NEW_ROOM_MESSAGE: handleRoomMessage,
   GUESS_RATING_UPDATE: handleGuessRated,
   NEW_ROOM_MESSAGE_WINNER: handleCorrectGuess,
-  UPDATE_PLAYER_ROLES: handlePlayerRolesUpdate
+  UPDATE_PLAYER_ROLES: handlePlayerRolesUpdate,
+  PICK_TARGET_WORD: handlePickTargetWord
 };
