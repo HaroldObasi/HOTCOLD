@@ -4,6 +4,7 @@ import Background from "../components/Background";
 import PlayerList from "../components/GamePage/PlayerList";
 import ChatBox from "../components/GamePage/ChatBox";
 import GuessBox from "../components/GamePage/GuessBox";
+import SelectWordModal from "../components/modals/SelectWordModal";
 
 const GamePage = () => {
   const room = useSelector((state: RootState) => state.game.room);
@@ -47,6 +48,7 @@ const GamePage = () => {
             )}
           </div>
         </div>
+        <SelectWordModal />
       </Background>
     </div>
   );
