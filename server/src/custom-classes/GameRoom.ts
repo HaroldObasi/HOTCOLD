@@ -156,14 +156,14 @@ export class GameRoom {
       io.to(this.id).emit("room_message", {
         type: "NEW_ROOM_MESSAGE",
         message: `${message.sender.userName} sent a message: ${message.message}`,
-        roomInfo: this
+        messageData: message
+        // roomInfo: this,
       });
     }
   }
 
   // This function takes a cb, which will be run every 1s for length number of seconds
   async serialRunner(cb: (i: number) => void, length: number, interval = 1000) {
-    this.targetWord = "apple";
     while (length >= 0) {
       await new Promise((resolve) => {
         setTimeout(() => {
@@ -210,7 +210,6 @@ export class GameRoom {
   async startGame() {
     //
     this.started = true;
-    console.log("The game has been started, ", this.id);
     io.to(this.id).emit("room_message", {
       type: "GAME_STARTED",
       message: `Round ${this.currentRound} has started`,
@@ -219,14 +218,14 @@ export class GameRoom {
     });
 
     while (this.currentRound <= this.maxRounds) {
-      //Loop through all the players in the room and give them a chance to be the admin
+      //Loop through all the players in the room and give them a chance to be the WORD_PICKER
 
       for (let i = 0; i < this.players.length; i++) {
         const currentPlayer = this.players[i];
         this.host = currentPlayer;
 
         currentPlayer.role = "WORD_PICKER";
-        this.players[i] = currentPlayer;
+        this.players[i] = currentPlayer; // replacing the old instance of the player, with the up
 
         //Inform all players of new roles after rep
         io.to(this.id).emit("room_message", {
@@ -268,7 +267,9 @@ export class GameRoom {
         console.log("GAME UNPAUSED");
 
         // Start Timer
-        await this.serialRunner(this.sendTimerTick.bind(this), 7);
+        await this.serialRunner(this.sendTimerTick.bind(this), 20);
+
+        // update users with current scores
 
         currentPlayer.role = "WORD_GUESSER";
         this.players[i] = currentPlayer;
