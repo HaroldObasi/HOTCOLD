@@ -2,7 +2,10 @@ import {toast} from "react-toastify";
 import {
   changeGameState,
   changeGameTimer,
-  changePlayerRoles
+  changePlayerRoles,
+  resetPickerMessages,
+  updateMessages,
+  updatePickerMessages
 } from "../state/GameSlice";
 import {Dispatch} from "react";
 import {setModal, setTargetWordOptions} from "../state/uiSlice";
@@ -32,7 +35,11 @@ const handlePlayerRolesUpdate = (dispatch: any, room: any) => {
 };
 
 const handleRoomMessage = (dispatch: any, room: any) => {
-  dispatch(changeGameState(room.roomInfo));
+  // dispatch(changeGameState(room.roomInfo));
+
+  //update admin message list
+  dispatch(updateMessages(room.messageData));
+  dispatch(updatePickerMessages(room.messageData));
 };
 
 const handleCorrectGuess = (dispatch: any, room: any) => {
@@ -54,6 +61,8 @@ const handlePickTargetWord = (dispatch: Dispatch<any>, event: any) => {
   //show the options on the modal for the word picker to select from
   dispatch(setModal(true));
   dispatch(setTargetWordOptions(event.message.words));
+
+  dispatch(resetPickerMessages(undefined));
   console.log("pick a word: ", event);
 };
 
