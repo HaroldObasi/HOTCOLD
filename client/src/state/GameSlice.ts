@@ -1,11 +1,14 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
+// give room an acctual type bot
 interface State {
   room: any;
 }
 
 const initialState: State = {
-  room: null
+  room: {
+    pickerMessages: []
+  }
 };
 
 export const gameSlice = createSlice({
@@ -13,8 +16,24 @@ export const gameSlice = createSlice({
   initialState,
   reducers: {
     changeGameState: (state, action: PayloadAction<any>) => {
-      state.room = action.payload;
+      state.room = {...state.room, ...action.payload};
     },
+
+    updateMessages: (state, action: PayloadAction<any>) => {
+      state.room.messages = [...state.room.messages, action.payload];
+    },
+
+    updatePickerMessages: (state, action: PayloadAction<any>) => {
+      state.room.pickerMessages = [
+        ...state.room.pickerMessages,
+        action.payload
+      ];
+    },
+
+    resetPickerMessages: (state, action: PayloadAction<any>) => {
+      state.room.pickerMessages = [];
+    },
+
     changeGameTimer: (state, action: PayloadAction<any>) => {
       state.room.timer = action.payload.timer;
 
@@ -34,7 +53,13 @@ export const gameSlice = createSlice({
   }
 });
 
-export const {changeGameState, changeGameTimer, changePlayerRoles} =
-  gameSlice.actions;
+export const {
+  changeGameState,
+  changeGameTimer,
+  changePlayerRoles,
+  updateMessages,
+  updatePickerMessages,
+  resetPickerMessages
+} = gameSlice.actions;
 
 export default gameSlice.reducer;
