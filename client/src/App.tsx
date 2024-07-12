@@ -40,7 +40,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={room === null ? <LandingPage /> : <GamePage />}
+            element={!room.id ? <LandingPage /> : <GamePage />}
           ></Route>
         </Routes>
       </BrowserRouter>
