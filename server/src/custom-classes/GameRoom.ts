@@ -13,6 +13,7 @@ import wordBank from "../data/wordBank.json";
 //3 or more players.
 
 export type Message = {
+  index: number;
   sender: Player;
   message: string;
   timeSent: string;
@@ -152,7 +153,9 @@ export class GameRoom {
         roomInfo: this
       });
     } else {
+      message.index = this.messages.length;
       this.messages.push(message);
+
       io.to(this.id).emit("room_message", {
         type: "NEW_ROOM_MESSAGE",
         message: `${message.sender.userName} sent a message: ${message.message}`,
