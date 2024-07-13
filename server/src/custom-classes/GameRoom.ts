@@ -197,15 +197,24 @@ export class GameRoom {
 
   // method to shuffle target words array, pauses game ?
   // send this.targetWordOptions to clients ?
-  shuffleTargetWordOptions() {
+  shuffleTargetWordOptions(playerId?: string) {
     const getRandomWords = (words: string[], count: number): string[] => {
       const shuffled = words.sort(() => 0.5 - Math.random());
       return shuffled.slice(0, count);
     };
 
     this.targetWordOptions = getRandomWords(wordBank, 4);
-    console.log("Target Word options: ", this.targetWordOptions);
     this.paused = true;
+
+    if (playerId) {
+      io.to(playerId).emit("room_message", {
+        type: "PICK_TARGET_WORD",
+        message: {
+          message: "Pick a target word",
+          words: this.targetWordOptions
+        }
+      });
+    }
   }
 
   // selects target word, pauses game ?
@@ -216,6 +225,19 @@ export class GameRoom {
 
     console.log("selected word: ", this.targetWord);
     this.paused = false;
+  }
+
+  waitForGameToResume(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      const checkPaused = () => {
+        if (!this.paused) {
+          resolve();
+        } else {
+          setTimeout(checkPaused, 100); // Check every 100ms
+        }
+      };
+      checkPaused();
+    });
   }
 
   // starts the game
@@ -256,28 +278,14 @@ export class GameRoom {
           player: currentPlayer
         });
 
-        // Give player chance to choose a word, use an infinite loop, or timer, break when game state changes ?
-        this.shuffleTargetWordOptions();
-
-        io.to(currentPlayer.id).emit("room_message", {
-          type: "PICK_TARGET_WORD",
-          message: {
-            message: "Pick a target word",
-            words: this.targetWordOptions
-          }
-        });
+        // Give player chance to choose a word,
+        // pauses game
+        this.shuffleTargetWordOptions(currentPlayer.id);
 
         console.log("GAME PAUSED, AWAITING USER TARGET WORD SELECTION");
-        await new Promise<void>((resolve) => {
-          const checkPaused = () => {
-            if (!this.paused) {
-              resolve();
-            } else {
-              setTimeout(checkPaused, 100); // Check every 100ms
-            }
-          };
-          checkPaused();
-        });
+
+        await this.waitForGameToResume();
+
         console.log("GAME UNPAUSED");
 
         // Start Timer
