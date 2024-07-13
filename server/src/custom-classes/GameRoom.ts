@@ -56,6 +56,9 @@ export class GameRoom {
     this.maxRounds = 3;
   }
 
+  // adds a player to a game room,
+  // should update the clients player list with this.players
+  // should send the player calling this thier player object
   addPlayer(player: Player, socket: Socket): boolean {
     if (this.players.length >= this.roomMaxCapacity) {
       return false;
@@ -92,6 +95,7 @@ export class GameRoom {
     return true;
   }
 
+  //Resets the state of the game room
   resetGameRoom() {
     this.players = [];
     this.host = null;
@@ -100,6 +104,8 @@ export class GameRoom {
     this.started = false;
   }
 
+  //removes a player from a room
+  //should update the clients player list with this.players
   removePlayer(playerId: string): GameRoom | undefined {
     let found: boolean = false;
 
@@ -139,6 +145,8 @@ export class GameRoom {
     return false;
   }
 
+  // add a message item to this.messages list
+  // update clients message list with this.messages
   sendMessage(message: Message) {
     const isCorrect = this.verifyGuess(message.message);
 
@@ -177,6 +185,7 @@ export class GameRoom {
     }
   }
 
+  // sends timer (i) update to connected users
   sendTimerTick(i: number) {
     io.to(this.id).emit("room_message", {
       type: "GAME_TIMER_TICK",
@@ -186,12 +195,11 @@ export class GameRoom {
     });
   }
 
-  //method to shuffle target words array
+  // method to shuffle target words array, pauses game ?
+  // send this.targetWordOptions to clients ?
   shuffleTargetWordOptions() {
     const getRandomWords = (words: string[], count: number): string[] => {
-      // Shuffle array
       const shuffled = words.sort(() => 0.5 - Math.random());
-      // Get sub-array of first n elements after shuffled
       return shuffled.slice(0, count);
     };
 
@@ -200,7 +208,7 @@ export class GameRoom {
     this.paused = true;
   }
 
-  // create method to pause / unpause game
+  // selects target word, pauses game ?
   selectTargetWord(index: number) {
     console.log("Target Word options: ", this.targetWordOptions);
 
@@ -210,9 +218,11 @@ export class GameRoom {
     this.paused = false;
   }
 
+  // starts the game
   async startGame() {
-    //
     this.started = true;
+
+    //game started, send this.started to client
     io.to(this.id).emit("room_message", {
       type: "GAME_STARTED",
       message: `Round ${this.currentRound} has started`,
@@ -231,6 +241,7 @@ export class GameRoom {
         this.players[i] = currentPlayer; // replacing the old instance of the player, with the up
 
         //Inform all players of new roles after rep
+        //send this.host, this.players to clients
         io.to(this.id).emit("room_message", {
           type: "UPDATE_PLAYER_ROLES",
           message: `New picker is ${currentPlayer.userName}`,
@@ -240,7 +251,7 @@ export class GameRoom {
         //Give options to host to pick words
         //select random 6 words
 
-        //Inform concerned player with new role
+        // Inform concerned player with new role
         io.to(currentPlayer.id).emit("player_update", {
           player: currentPlayer
         });
@@ -285,6 +296,8 @@ export class GameRoom {
     }
 
     console.log("The game has ended");
+
+    // maybe end game with a short timer, and then restart
 
     //choose new game host / word picker
 
