@@ -83,9 +83,9 @@ export class GameRoom {
     });
 
     io.to(this.id).emit("room_message", {
-      type: "ROOM_UPDATE",
+      type: "PLAYER_JOINED",
       message: `User: ${player.userName} has joined ${this.id}`,
-      roomInfo: this
+      playerList: this.players
     });
 
     if (this.players.length > 1 && !this.targetWord) {
@@ -191,7 +191,7 @@ export class GameRoom {
       type: "GAME_TIMER_TICK",
       message: "Timer Ticking",
       timer: i,
-      roomInfo: this
+      currentRound: this.currentRound
     });
   }
 
@@ -209,10 +209,8 @@ export class GameRoom {
     if (playerId) {
       io.to(playerId).emit("room_message", {
         type: "PICK_TARGET_WORD",
-        message: {
-          message: "Pick a target word",
-          words: this.targetWordOptions
-        }
+        message: "Pick a target word",
+        words: this.targetWordOptions
       });
     }
   }
@@ -248,8 +246,7 @@ export class GameRoom {
     io.to(this.id).emit("room_message", {
       type: "GAME_STARTED",
       message: `Round ${this.currentRound} has started`,
-      timer: "40s",
-      roomInfo: this
+      started: true
     });
 
     while (this.currentRound <= this.maxRounds) {
@@ -267,7 +264,8 @@ export class GameRoom {
         io.to(this.id).emit("room_message", {
           type: "UPDATE_PLAYER_ROLES",
           message: `New picker is ${currentPlayer.userName}`,
-          roomInfo: this
+          playerList: this.players,
+          currentRound: this.currentRound
         });
 
         //Give options to host to pick words

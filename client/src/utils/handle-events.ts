@@ -12,14 +12,14 @@ import {setModal, setTargetWordOptions} from "../state/uiSlice";
 
 const handleGameStarted = (dispatch: Dispatch<any>, room: any) => {
   toast.success(room.message);
-  dispatch(changeGameState(room.roomInfo));
+  dispatch(changeGameState(room.started));
 };
 
 const handleTimerTick = (dispatch: any, room: any) => {
   dispatch(
     changeGameTimer({
       timer: room.timer,
-      currentRound: room.roomInfo.currentRound
+      currentRound: room.currentRound
     })
   );
 };
@@ -27,8 +27,8 @@ const handleTimerTick = (dispatch: any, room: any) => {
 const handlePlayerRolesUpdate = (dispatch: any, room: any) => {
   dispatch(
     changePlayerRoles({
-      players: room.roomInfo.players,
-      currentRound: room.roomInfo.currentRound
+      players: room.playerList,
+      currentRound: room.currentRound
     })
   );
   toast.success(room.message);
@@ -47,20 +47,25 @@ const handleCorrectGuess = (dispatch: any, room: any) => {
   dispatch(changeGameState(room.roomInfo));
 };
 
-const handleRoomUpdate = (dispatch: any, room: any) => {
+const handlePlayerJoined = (dispatch: any, room: any) => {
   toast.success(room.message);
-  dispatch(changeGameState(room.roomInfo));
+  dispatch(changeGameState(room.playerList));
+};
+
+const handlePlayerLeft = (dispatch: any, room: any) => {
+  toast.success(room.message);
+  dispatch(changeGameState(room.playerList));
 };
 
 const handleGuessRated = (dispatch: any, room: any) => {
-  dispatch(changeGameState(room.roomInfo));
+  dispatch(changeGameState(room.messages));
 };
 
 const handlePickTargetWord = (dispatch: Dispatch<any>, event: any) => {
   //trigger the modal
   //show the options on the modal for the word picker to select from
   dispatch(setModal(true));
-  dispatch(setTargetWordOptions(event.message.words));
+  dispatch(setTargetWordOptions(event.words));
 
   dispatch(resetPickerMessages(undefined));
   console.log("pick a word: ", event);
@@ -73,7 +78,8 @@ type Events = {
 export const events: Events = {
   GAME_STARTED: handleGameStarted,
   GAME_TIMER_TICK: handleTimerTick,
-  ROOM_UPDATE: handleRoomUpdate,
+  PLAYER_JOINED: handlePlayerJoined,
+  PLAYER_LEFT: handlePlayerLeft,
   NEW_ROOM_MESSAGE: handleRoomMessage,
   GUESS_RATING_UPDATE: handleGuessRated,
   NEW_ROOM_MESSAGE_WINNER: handleCorrectGuess,

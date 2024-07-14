@@ -16,12 +16,13 @@ export const rateGuess = (req: Request, res: Response) => {
   //we need to change the rating of the message
   targetRoom.messages[messageIndex].rating = rating;
 
-  // we need to send the updated room to all the clients in that room
+  // we need to send the room's updated messages to all the clients in that room
+  // send GameRoom.messages to room
   // why not let the GameRoom class handle this ?
   io.to(targetRoom.id).emit("room_message", {
     type: "GUESS_RATING_UPDATE",
     message: `Rating Changed`,
-    roomInfo: targetRoom
+    messages: targetRoom.messages
   });
 
   return res.status(200).json({

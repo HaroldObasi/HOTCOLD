@@ -17,6 +17,10 @@ function App() {
   useEffect(() => {
     function onRoomMessage(value: any) {
       const func = events[value.type];
+
+      if (!func) {
+        console.log("Message not handled: ", value);
+      }
       func(dispatch, value);
     }
 
