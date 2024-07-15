@@ -12,12 +12,19 @@ import wordBank from "../data/wordBank.json";
 //TODO create a new method that will only allow a game to progress if the game only
 //3 or more players.
 
+export enum RatingEnum {
+  HOT = "HOT",
+  COLD = "COLD",
+  COLDER = "COLDER",
+  WARMER = "WARMER"
+}
+
 export type Message = {
   index: number;
   sender: Player;
   message: string;
   timeSent: string;
-  rating: null | "HOT" | "COLD";
+  rating: null | RatingEnum;
   correct: boolean;
   roomId: string;
 };
@@ -56,6 +63,25 @@ export class GameRoom {
     this.maxRounds = 3;
   }
 
+  //send's info of the class that i want to send, as opposed to all
+  toJson(withTargetWord: boolean = false) {
+    const serializedRoom = {
+      id: this.id,
+      players: this.players,
+      host: this.host,
+      messages: this.messages,
+      currentRound: this.currentRound,
+      maxRounds: this.maxRounds,
+      started: this.started,
+      targetWordOptions: this.targetWordOptions
+    };
+
+    if (withTargetWord) {
+      serializedRoom["targetWord"] = this.targetWord;
+    }
+    return serializedRoom;
+  }
+
   // adds a player to a game room,
   // should update the clients player list with this.players
   // should send the player calling this thier player object
@@ -85,10 +111,10 @@ export class GameRoom {
     io.to(this.id).emit("room_message", {
       type: "PLAYER_JOINED",
       message: `User: ${player.userName} has joined ${this.id}`,
-      playerList: this.players
+      roomInfo: this.toJson()
     });
 
-    if (this.players.length > 1 && !this.targetWord) {
+    if (this.players.length > 1) {
       this.startGame();
     }
 
@@ -158,7 +184,7 @@ export class GameRoom {
       io.to(this.id).emit("room_message", {
         type: "NEW_ROOM_MESSAGE_WINNER",
         message: `${message.sender.userName} guessed the word correctly`,
-        roomInfo: this
+        roomInfo: this.toJson()
       });
     } else {
       message.index = this.messages.length;
@@ -216,10 +242,17 @@ export class GameRoom {
   }
 
   // selects target word, pauses game ?
-  selectTargetWord(index: number) {
+  selectTargetWord(index: number, playerId: string) {
     console.log("Target Word options: ", this.targetWordOptions);
 
     this.targetWord = this.targetWordOptions[index];
+
+    //send message to word picker letting them know the word that they picked
+    io.to(playerId).emit("room_message", {
+      type: "UPDATE_TARGET_WORD",
+      message: "The target word has been updated",
+      targetWord: this.targetWord
+    });
 
     console.log("selected word: ", this.targetWord);
     this.paused = false;
