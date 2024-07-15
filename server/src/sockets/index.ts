@@ -31,7 +31,7 @@ export const initializeSocketEvents = (io: Server) => {
         io.to(leftRoom.id).emit("room_message", {
           type: "PLAYER_LEFT",
           message: `${socket.id}, has left the room`,
-          playerList: leftRoom.players
+          roomInfo: leftRoom.toJson()
         });
       }
 
