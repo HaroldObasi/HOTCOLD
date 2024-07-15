@@ -1,6 +1,14 @@
 import {Request, Response} from "express";
 import {io} from "../index.js";
 import {RoomList} from "../custom-classes/RoomList.js";
+import {RatingEnum} from "custom-classes/GameRoom.js";
+
+const RatingScoreMap: {[K in RatingEnum]: number} = {
+  COLD: 0,
+  COLDER: 0,
+  WARMER: 2,
+  HOT: 4
+};
 
 export const rateGuess = (req: Request, res: Response) => {
   const {messageIndex, rating, roomId} = req.body;
@@ -14,7 +22,14 @@ export const rateGuess = (req: Request, res: Response) => {
 
   //we need the index of the message to access the message from the messages array in the Game
   //we need to change the rating of the message
+
   targetRoom.messages[messageIndex].rating = rating;
+
+  // assign points to guesser based on rating
+  const score = RatingScoreMap[rating];
+  targetRoom.messages[messageIndex].sender.score += score;
+
+  //add to players score:
 
   // we need to send the room's updated messages to all the clients in that room
   // send GameRoom.messages to room
@@ -22,7 +37,8 @@ export const rateGuess = (req: Request, res: Response) => {
   io.to(targetRoom.id).emit("room_message", {
     type: "GUESS_RATING_UPDATE",
     message: `Rating Changed`,
-    messages: targetRoom.messages
+    messages: targetRoom.messages,
+    playerList: targetRoom.players
   });
 
   return res.status(200).json({
@@ -31,9 +47,10 @@ export const rateGuess = (req: Request, res: Response) => {
 };
 
 export const selectTargetWord = (req: Request, res: Response) => {
-  const {wordIndex, roomId} = req.body;
+  const {wordIndex, roomId, playerId} = req.body;
 
   const targetRoom = RoomList.rooms[roomId];
+  //verify that player exists in rooom at all
 
   if (!targetRoom) {
     return res.status(404).json({
@@ -41,7 +58,7 @@ export const selectTargetWord = (req: Request, res: Response) => {
     });
   }
 
-  targetRoom.selectTargetWord(wordIndex);
+  targetRoom.selectTargetWord(wordIndex, playerId);
 
   return res.status(200).json({
     message: "target word selected"
