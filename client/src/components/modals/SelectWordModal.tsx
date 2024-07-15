@@ -20,18 +20,18 @@ const SelectWordModal = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const {id: roomId} = useSelector((state: RootState) => state.game.room);
+  const {id} = useSelector((state: RootState) => state.player);
   const {modalOpen, targetWordOptions} = useSelector(
     (state: RootState) => state.ui
   );
-
-  console.log("tw ", targetWordOptions);
 
   const onSelectOption = async (index: number) => {
     try {
       setLoading(true);
       await axios.post(`${apiUrl}/api/guess/selectTargetWord`, {
         wordIndex: index,
-        roomId: roomId
+        roomId: roomId,
+        playerId: id
       });
       dispatch(setModal(false));
     } catch (error) {
