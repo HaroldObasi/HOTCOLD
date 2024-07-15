@@ -19,15 +19,27 @@ export const gameSlice = createSlice({
       state.room = {...state.room, ...action.payload};
     },
 
-    updateMessages: (state, action: PayloadAction<any>) => {
+    changeGameStarted: (state, action: PayloadAction<any>) => {
+      state.room.started = action.payload;
+    },
+
+    addMessage: (state, action: PayloadAction<any>) => {
       state.room.messages = [...state.room.messages, action.payload];
     },
 
-    updatePickerMessages: (state, action: PayloadAction<any>) => {
+    addPickerMessage: (state, action: PayloadAction<any>) => {
       state.room.pickerMessages = [
         ...state.room.pickerMessages,
         action.payload
       ];
+    },
+
+    updatePlayers: (state, action: PayloadAction<any>) => {
+      state.room.players = action.payload;
+    },
+
+    updateMesssages: (state, action: PayloadAction<any>) => {
+      state.room.messages = action.payload;
     },
 
     resetPickerMessages: (state, action: PayloadAction<any>) => {
@@ -43,6 +55,9 @@ export const gameSlice = createSlice({
       //Also update the state of the players just in case the player changes :)
     },
 
+    updateTargetWord: (state, action: PayloadAction<any>) => {
+      state.room.targetWord = action.payload;
+    },
     //Handles an event where a players
     changePlayerRoles: (state, action: PayloadAction<any>) => {
       state.room.players = action.payload.players;
@@ -55,11 +70,15 @@ export const gameSlice = createSlice({
 
 export const {
   changeGameState,
+  changeGameStarted,
   changeGameTimer,
   changePlayerRoles,
-  updateMessages,
-  updatePickerMessages,
-  resetPickerMessages
+  addMessage,
+  addPickerMessage,
+  resetPickerMessages,
+  updateTargetWord,
+  updatePlayers,
+  updateMesssages
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
