@@ -1,18 +1,22 @@
 import {toast} from "react-toastify";
 import {
+  changeGameStarted,
   changeGameState,
   changeGameTimer,
   changePlayerRoles,
   resetPickerMessages,
-  updateMessages,
-  updatePickerMessages
+  addMessage,
+  addPickerMessage,
+  updatePlayers,
+  updateTargetWord,
+  updateMesssages
 } from "../state/GameSlice";
 import {Dispatch} from "react";
 import {setModal, setTargetWordOptions} from "../state/uiSlice";
 
 const handleGameStarted = (dispatch: Dispatch<any>, room: any) => {
   toast.success(room.message);
-  dispatch(changeGameState(room.started));
+  dispatch(changeGameStarted(room.started));
 };
 
 const handleTimerTick = (dispatch: any, room: any) => {
@@ -38,8 +42,8 @@ const handleRoomMessage = (dispatch: any, room: any) => {
   // dispatch(changeGameState(room.roomInfo));
 
   //update admin message list
-  dispatch(updateMessages(room.messageData));
-  dispatch(updatePickerMessages(room.messageData));
+  dispatch(addMessage(room.messageData));
+  dispatch(addPickerMessage(room.messageData));
 };
 
 const handleCorrectGuess = (dispatch: any, room: any) => {
@@ -49,16 +53,18 @@ const handleCorrectGuess = (dispatch: any, room: any) => {
 
 const handlePlayerJoined = (dispatch: any, room: any) => {
   toast.success(room.message);
-  dispatch(changeGameState(room.playerList));
+  dispatch(changeGameState(room.roomInfo));
 };
 
 const handlePlayerLeft = (dispatch: any, room: any) => {
   toast.success(room.message);
-  dispatch(changeGameState(room.playerList));
+  dispatch(changeGameState(room.roomInfo));
 };
 
 const handleGuessRated = (dispatch: any, room: any) => {
-  dispatch(changeGameState(room.messages));
+  dispatch(updateMesssages(room.messages));
+  // dispatch(addPickerMessage(room.messages));
+  dispatch(updatePlayers(room.playerList));
 };
 
 const handlePickTargetWord = (dispatch: Dispatch<any>, event: any) => {
@@ -69,6 +75,10 @@ const handlePickTargetWord = (dispatch: Dispatch<any>, event: any) => {
 
   dispatch(resetPickerMessages(undefined));
   console.log("pick a word: ", event);
+};
+
+const handleUpdateTargetWord = (dispatch: Dispatch<any>, event: any) => {
+  dispatch(updateTargetWord(event.targetWord));
 };
 
 type Events = {
@@ -84,5 +94,6 @@ export const events: Events = {
   GUESS_RATING_UPDATE: handleGuessRated,
   NEW_ROOM_MESSAGE_WINNER: handleCorrectGuess,
   UPDATE_PLAYER_ROLES: handlePlayerRolesUpdate,
-  PICK_TARGET_WORD: handlePickTargetWord
+  PICK_TARGET_WORD: handlePickTargetWord,
+  UPDATE_TARGET_WORD: handleUpdateTargetWord
 };
