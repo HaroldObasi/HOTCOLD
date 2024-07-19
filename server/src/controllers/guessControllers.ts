@@ -10,6 +10,8 @@ const RatingScoreMap: {[K in RatingEnum]: number} = {
   HOT: 4
 };
 
+// TODO THE SCORE ON THE TARGET PLAYER IS NOT BEING UPDATED FOR SOME REASON
+// FIND OUT WHY
 export const rateGuess = (req: Request, res: Response) => {
   const {messageIndex, rating, roomId} = req.body;
   const targetRoom = RoomList.rooms[roomId];
@@ -24,10 +26,24 @@ export const rateGuess = (req: Request, res: Response) => {
   //we need to change the rating of the message
 
   targetRoom.messages[messageIndex].rating = rating;
+  let sender = targetRoom.messages[messageIndex].sender;
 
   // assign points to guesser based on rating
   const score = RatingScoreMap[rating];
-  targetRoom.messages[messageIndex].sender.score += score;
+
+  let oldScore = targetRoom.messages[messageIndex].sender.score;
+  const newScore = oldScore + score;
+
+  sender.score = newScore;
+
+  // Update the player's score in the players array
+  const playerIndex = targetRoom.players.findIndex(
+    (player) => player.id === sender.id
+  );
+  if (playerIndex !== -1) {
+    targetRoom.players[playerIndex].score = newScore;
+  }
+
 
   //add to players score:
 

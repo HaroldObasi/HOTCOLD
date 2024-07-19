@@ -62,6 +62,7 @@ const handlePlayerLeft = (dispatch: any, room: any) => {
 };
 
 const handleGuessRated = (dispatch: any, room: any) => {
+  console.log("data: ", room);
   dispatch(updateMesssages(room.messages));
   // dispatch(addPickerMessage(room.messages));
   dispatch(updatePlayers(room.playerList));
