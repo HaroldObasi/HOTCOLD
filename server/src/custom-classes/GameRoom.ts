@@ -320,7 +320,7 @@ export class GameRoom {
         console.log("GAME UNPAUSED");
 
         // Start Timer
-        await this.serialRunner(this.sendTimerTick.bind(this), 20);
+        await this.serialRunner(this.sendTimerTick.bind(this), 30);
 
         // update users with current scores
 
