@@ -27,10 +27,11 @@ export const initializeSocketEvents = (io: Server) => {
       if (leftRoom === undefined) {
         console.log("Room not found");
       } else {
+        // send new players list to room
         io.to(leftRoom.id).emit("room_message", {
-          type: "ROOM_UPDATE",
+          type: "PLAYER_LEFT",
           message: `${socket.id}, has left the room`,
-          roomInfo: leftRoom
+          roomInfo: leftRoom.toJson()
         });
       }
 

@@ -115,7 +115,7 @@ const LandingPage = () => {
           <PlayModal
             open={selectedModal === "play"}
             onClose={() => setSelectedModal(null)}
-            overlayClassName=" backdrop-blur"
+            overlayClassName="backdrop-blur"
           >
             <div className="py-4">
               <h2 className="text-center font-denk text-2xl md:text-3xl lg:text-4xl text-black">

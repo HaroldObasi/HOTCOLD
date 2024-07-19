@@ -17,6 +17,10 @@ function App() {
   useEffect(() => {
     function onRoomMessage(value: any) {
       const func = events[value.type];
+
+      if (!func) {
+        console.log("Message not handled: ", value);
+      }
       func(dispatch, value);
     }
 
@@ -40,7 +44,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={room === null ? <LandingPage /> : <GamePage />}
+            element={!room.id ? <LandingPage /> : <GamePage />}
           ></Route>
         </Routes>
       </BrowserRouter>

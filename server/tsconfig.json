@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "NodeNext",
+    "resolveJsonModule": true,
     "moduleResolution": "NodeNext",
     "baseUrl": "src",
     "target": "ES2020",
