@@ -42,7 +42,7 @@ export const gameSlice = createSlice({
       state.room.messages = action.payload;
     },
 
-    resetPickerMessages: (state, action: PayloadAction<any>) => {
+    resetPickerMessages: (state) => {
       state.room.pickerMessages = [];
     },
 
