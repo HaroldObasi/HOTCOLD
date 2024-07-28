@@ -19,15 +19,17 @@ export enum RatingEnum {
   WARMER = "WARMER"
 }
 
-export type Message = {
-  index: number;
-  sender: Player;
-  message: string;
-  timeSent: string;
-  rating: null | RatingEnum;
-  correct: boolean;
-  roomId: string;
-};
+export class Message {
+  constructor(
+    public index: number,
+    public sender: Player,
+    public message: string,
+    public timeSent: string,
+    public rating: null | RatingEnum,
+    public correct: boolean,
+    public roomId: string
+  ) {}
+}
 
 export class GameRoom {
   id: string;
@@ -42,6 +44,7 @@ export class GameRoom {
   started: boolean = false;
   paused: boolean = false;
   targetWordOptions: string[];
+  roundTime: number = 60;
   private selected: Set<number> = new Set();
 
   constructor(
@@ -178,6 +181,10 @@ export class GameRoom {
 
     if (isCorrect) {
       message.correct = true;
+
+      const index = this.messages.length;
+
+      message.index = index;
       this.messages.push(message);
 
       console.log("THE GUESS IS CORRECT");
@@ -320,7 +327,7 @@ export class GameRoom {
         console.log("GAME UNPAUSED");
 
         // Start Timer
-        await this.serialRunner(this.sendTimerTick.bind(this), 30);
+        await this.serialRunner(this.sendTimerTick.bind(this), this.roundTime);
 
         // update users with current scores
 
