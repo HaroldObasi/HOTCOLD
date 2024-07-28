@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {FormEvent, useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "../../state/PlayerStore";
 import Message from "./Message";
@@ -9,7 +9,8 @@ const ChatBox = () => {
   const player = useSelector((state: RootState) => state.player);
   const [guess, setGuess] = useState<string>("");
 
-  function handleSendMessage() {
+  function handleSendMessage(e: FormEvent) {
+    e.preventDefault();
     const data = {
       sender: player,
       message: guess,
@@ -19,6 +20,7 @@ const ChatBox = () => {
       roomId: player.roomId
     };
     socket.emit("send_message", data);
+    setGuess("");
   }
   return (
     <div className="bg-slate-200 flex-1 flex flex-col relative">
@@ -40,20 +42,27 @@ const ChatBox = () => {
         </ul>
       </div>
       {player.role === "WORD_GUESSER" && (
-        <div className="absolute bottom-0 w-full flex gap-x-1">
-          <input
-            className="font-denk font-light py-2 px-2 ring-0 outline-none w-full"
-            type="text"
-            onChange={(e) => {
-              setGuess(e.target.value);
-            }}
-          />
-          <button
-            onClick={handleSendMessage}
-            className="px-3 bg-emerald-400 hover:bg-emerald-700 text-white"
+        <div className="">
+          <form
+            className="absolute bottom-0 w-full flex gap-x-1"
+            action=""
+            onSubmit={handleSendMessage}
           >
-            Send
-          </button>
+            <input
+              className="font-denk font-light py-2 px-2 ring-0 outline-none w-full"
+              type="text"
+              value={guess}
+              onChange={(e) => {
+                setGuess(e.target.value);
+              }}
+            />
+            <button
+              type="submit"
+              className="px-3 bg-emerald-400 hover:bg-emerald-700 text-white"
+            >
+              Send
+            </button>
+          </form>
         </div>
       )}
     </div>
