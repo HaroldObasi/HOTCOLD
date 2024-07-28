@@ -59,7 +59,6 @@ export const initializeSocketEvents = (io: Server) => {
       }
 
       console.log(`Socket id: ${socket.id} has disconnected from the socket`);
-      console.log("Rooms: ", RoomList.rooms);
     });
   });
 };
