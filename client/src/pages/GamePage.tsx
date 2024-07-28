@@ -8,6 +8,9 @@ import SelectWordModal from "../components/modals/SelectWordModal";
 
 const GamePage = () => {
   const room = useSelector((state: RootState) => state.game.room);
+  const player = useSelector((state: RootState) => state.player);
+
+  console.log("player", player);
 
   return (
     <div className="font-dela">
@@ -38,8 +41,10 @@ const GamePage = () => {
 
             {room.started === true ? (
               <div className="flex flex-1 gap-2 flex-col lg:flex-row">
-                <GuessBox />
-                <ChatBox />
+                {player.role === "WORD_PICKER" && <GuessBox />}
+                {player.role === "WORD_GUESSER" && <ChatBox />}
+                {/* <GuessBox />
+                <ChatBox /> */}
               </div>
             ) : (
               <div className="flex-1 bg-slate-200 flex justify-center items-center">
