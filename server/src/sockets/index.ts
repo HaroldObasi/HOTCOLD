@@ -6,6 +6,8 @@ import {
   handleCreateRoom,
   handleRoomMessage
 } from "./socketEventHandlers.js";
+import {Player} from "custom-classes/Player.js";
+import {Message} from "custom-classes/GameRoom.js";
 
 export const initializeSocketEvents = (io: Server) => {
   io.on("connection", (socket: Socket) => {
@@ -19,11 +21,32 @@ export const initializeSocketEvents = (io: Server) => {
       handleRoomJoinWithID(data, socket)
     );
 
-    socket.on("send_message", (data) => handleRoomMessage(data));
+    socket.on("send_message", (data: Message) => {
+      const player = new Player(socket.id, "test");
 
-    socket.on("disconnect", (reason:string) => {
+      player.fromInstance(
+        data.sender.id,
+        data.sender.userName,
+        data.sender.role,
+        data.sender.score,
+        data.sender.roomId
+      );
+
+      const message = new Message(
+        data.index,
+        player,
+        data.message,
+        data.timeSent,
+        data?.rating,
+        data?.correct,
+        data.roomId
+      );
+      handleRoomMessage(message);
+    });
+
+    socket.on("disconnect", (reason: string) => {
       const leftRoom = RoomList.removePlayer(socket.id);
-      console.log('Reason:- ',reason);
+      console.log("Reason:- ", reason);
       if (leftRoom === undefined) {
         console.log("Room not found");
       } else {
