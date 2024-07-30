@@ -11,16 +11,15 @@ type RoomProps = {
 
 type RoomType = {
   id: string;
-  players: string;
+  players: {[key: string]: string};
   roomMaxCapacity: number;
   host: string;
 };
 
 export default function Room({room, roomName}: RoomProps) {
   const playerName = useSelector((state: RootState) => state.player.userName);
-  const isRoomFull = room.players.length === room.roomMaxCapacity;
+  const isRoomFull = Object.keys(room.players).length === room.roomMaxCapacity;
   const [isJoiningRoom, setIsJoiningRoom] = useState(false);
-
 
   function handleJoinRoom() {
     setIsJoiningRoom(true);
@@ -36,7 +35,7 @@ export default function Room({room, roomName}: RoomProps) {
           <span>Full</span>
         ) : (
           <span className="">
-            {room.players.length}/{room.roomMaxCapacity} players
+            {Object.keys(room.players).length}/{room.roomMaxCapacity} players
           </span>
         )}
       </div>
