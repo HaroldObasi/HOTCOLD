@@ -33,7 +33,9 @@ export class Message {
 
 export class GameRoom {
   id: string;
-  players: Player[];
+  players: {
+    [playerId: string]: Player;
+  };
   host: Player;
   isPrivateRoom: boolean;
   targetWord: string | null;
@@ -45,11 +47,12 @@ export class GameRoom {
   paused: boolean = false;
   targetWordOptions: string[];
   roundTime: number = 60;
-  private selected: Set<number> = new Set();
 
   constructor(
     id: string,
-    players: Player[],
+    players: {
+      [playerId: string]: Player;
+    },
     roomMaxCapcity?: number,
     isPrivateRoom: boolean = false
   ) {
@@ -58,9 +61,6 @@ export class GameRoom {
     this.isPrivateRoom = isPrivateRoom;
     this.roomMaxCapacity =
       typeof roomMaxCapcity === "undefined" ? 5 : roomMaxCapcity;
-    if (players.length > 0) {
-      this.host = players[0];
-    }
     this.messages = [];
     this.currentRound = 1;
     this.maxRounds = 3;
@@ -89,20 +89,24 @@ export class GameRoom {
   // should update the clients player list with this.players
   // should send the player calling this thier player object
   addPlayer(player: Player, socket: Socket): boolean {
-    if (this.players.length >= this.roomMaxCapacity) {
+    const playerListSize = Object.keys(this.players).length;
+
+    if (playerListSize >= this.roomMaxCapacity) {
       return false;
     }
-    if (this.players.length === 0) {
+
+    if (playerListSize === 0) {
       player.role = "WORD_PICKER";
       this.host = player;
     }
     player.roomId = this.id;
+
     // avoid adding the same player twice
-    if (this.players.find((p) => p.id === player.id)) {
+    if (this.players[player.id]) {
       return false;
     }
+    this.players[player.id] = player;
 
-    this.players.push(player);
     socket.join(this.id);
 
     // WHY ????
@@ -117,7 +121,7 @@ export class GameRoom {
       roomInfo: this.toJson()
     });
 
-    if (this.players.length > 1) {
+    if (Object.keys(this.players).length > 1) {
       this.startGame();
     }
 
@@ -126,7 +130,7 @@ export class GameRoom {
 
   //Resets the state of the game room
   resetGameRoom() {
-    this.players = [];
+    this.players = {};
     this.host = null;
     this.messages = [];
     this.targetWord = "";
@@ -136,34 +140,19 @@ export class GameRoom {
   //removes a player from a room
   //should update the clients player list with this.players
   removePlayer(playerId: string): GameRoom | undefined {
-    let found: boolean = false;
+    const playerListSize = Object.keys(this.players).length;
 
-    this.players = this.players.filter((player) => {
-      if (playerId === player.id) {
-        found = true;
-        return false;
-      }
-      return true;
-    });
+    const foundPlayer = this.players[playerId];
 
-    if (this.players.length < 1) {
-      console.log("The room is empty");
-      this.resetGameRoom();
-    }
-
-    if (found) {
-      return this;
-    } else {
+    if (!foundPlayer) {
       return;
+    } else {
+      delete this.players[playerId];
+      if (playerListSize <= 1) {
+        this.resetGameRoom();
+      }
+      return this;
     }
-  }
-
-  setRoomMaxCapacity(newCapacity: number) {
-    if (newCapacity < 3 || newCapacity > 5) return;
-
-    if (this.players.length > newCapacity) return;
-
-    this.roomMaxCapacity = newCapacity;
   }
 
   verifyGuess(word: string): Boolean {
