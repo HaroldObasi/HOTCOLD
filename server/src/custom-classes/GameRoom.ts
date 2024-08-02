@@ -20,15 +20,32 @@ export enum RatingEnum {
 }
 
 export class Message {
+  public index: number;
+  public sender: {
+    id: string;
+    userName: string;
+  };
+  public message: string;
+  public timeSent: string;
+  public rating: null | RatingEnum;
+  public correct: boolean;
+  public roomId: string;
   constructor(
-    public index: number,
-    public sender: Player,
-    public message: string,
-    public timeSent: string,
-    public rating: null | RatingEnum,
-    public correct: boolean,
-    public roomId: string
-  ) {}
+    index: number,
+    sender: {id: string; userName: string},
+    message: string,
+    timeSent: string,
+    rating: null | RatingEnum,
+    correct: boolean,
+    roomId: string
+  ) {
+    this.sender = sender;
+    this.message = message;
+    this.timeSent = timeSent;
+    this.rating = rating;
+    this.correct = correct;
+    this.roomId = roomId;
+  }
 }
 
 export class GameRoom {
