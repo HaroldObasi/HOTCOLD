@@ -46,7 +46,7 @@ export class GameRoom {
   started: boolean = false;
   paused: boolean = false;
   targetWordOptions: string[];
-  roundTime: number = 60;
+  roundTime: number = 10;
 
   constructor(
     id: string,
@@ -121,7 +121,7 @@ export class GameRoom {
       roomInfo: this.toJson()
     });
 
-    if (Object.keys(this.players).length > 1) {
+    if (Object.keys(this.players).length > 1 && !this.started) {
       this.startGame();
     }
 
@@ -268,6 +268,8 @@ export class GameRoom {
   }
 
   // starts the game
+  // small bug, players joining after round starts dont have the chance to be the word picker
+
   async startGame() {
     this.started = true;
 
@@ -281,9 +283,11 @@ export class GameRoom {
     while (this.currentRound <= this.maxRounds) {
       //Loop through all the players in the room and give them a chance to be the WORD_PICKER
 
+      let procesedKeys = new Set();
       while (true) {
         const currentKeys = Object.keys(this.players);
-        let procesedKeys = new Set();
+
+        console.log("Current Keys: ", currentKeys);
         const isKeysProcessed = false;
 
         // iterating through all the players in the room
