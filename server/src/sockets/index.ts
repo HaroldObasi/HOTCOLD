@@ -22,26 +22,7 @@ export const initializeSocketEvents = (io: Server) => {
     );
 
     socket.on("send_message", (data: Message) => {
-      const player = new Player(socket.id, "test");
-
-      player.fromInstance(
-        data.sender.id,
-        data.sender.userName,
-        data.sender.role,
-        data.sender.score,
-        data.sender.roomId
-      );
-
-      const message = new Message(
-        data.index,
-        player,
-        data.message,
-        data.timeSent,
-        data?.rating,
-        data?.correct,
-        data.roomId
-      );
-      handleRoomMessage(message);
+      handleRoomMessage(data);
     });
 
     socket.on("disconnect", (reason: string) => {
