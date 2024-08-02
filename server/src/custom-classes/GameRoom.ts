@@ -219,7 +219,7 @@ export class GameRoom {
 
   // method to shuffle target words array, pauses game ?
   // send this.targetWordOptions to clients ?
-  shuffleTargetWordOptions(playerId?: string) {
+  sendTargetWordsToHost(playerId?: string) {
     const getRandomWords = (words: string[], count: number): string[] => {
       const shuffled = words.sort(() => 0.5 - Math.random());
       return shuffled.slice(0, count);
@@ -281,52 +281,66 @@ export class GameRoom {
     while (this.currentRound <= this.maxRounds) {
       //Loop through all the players in the room and give them a chance to be the WORD_PICKER
 
-      for (let i = 0; i < this.players.length; i++) {
-        const currentPlayer = this.players[i];
-        this.host = currentPlayer;
+      while (true) {
+        const currentKeys = Object.keys(this.players);
+        let procesedKeys = new Set();
+        const isKeysProcessed = false;
 
-        currentPlayer.role = "WORD_PICKER";
-        this.players[i] = currentPlayer; // replacing the old instance of the player, with the up
+        // iterating through all the players in the room
+        for (let key of currentKeys) {
+          if (!procesedKeys.has(key)) {
+            procesedKeys.add(key);
+            const currentPlayer = this.players[key];
+            this.host = currentPlayer;
 
-        //Inform all players of new roles after rep
-        //send this.host, this.players to clients
-        io.to(this.id).emit("room_message", {
-          type: "UPDATE_PLAYER_ROLES",
-          message: `New picker is ${currentPlayer.userName}`,
-          playerList: this.players,
-          currentRound: this.currentRound
-        });
+            currentPlayer.role = "WORD_PICKER";
+            this.players[key] = currentPlayer; // replacing the old instance of the player, with the up
 
-        //Give options to host to pick words
-        //select random 6 words
+            //Inform all players of new roles after rep
+            //send this.host, this.players to clients
+            io.to(this.id).emit("room_message", {
+              type: "UPDATE_PLAYER_ROLES",
+              message: `New picker is ${currentPlayer.userName}`,
+              playerList: this.players,
+              currentRound: this.currentRound
+            });
 
-        // Inform concerned player with new role
-        io.to(currentPlayer.id).emit("player_update", {
-          player: currentPlayer
-        });
+            // Inform concerned player with new role
+            io.to(currentPlayer.id).emit("player_update", {
+              player: currentPlayer
+            });
 
-        // Give player chance to choose a word,
-        // pauses game
-        this.shuffleTargetWordOptions(currentPlayer.id);
+            // Give player chance to choose a word,
+            // pauses game
+            this.sendTargetWordsToHost(currentPlayer.id);
+            console.log("GAME PAUSED, AWAITING USER TARGET WORD SELECTION");
 
-        console.log("GAME PAUSED, AWAITING USER TARGET WORD SELECTION");
+            await this.waitForGameToResume();
+            console.log("GAME UNPAUSED");
 
-        await this.waitForGameToResume();
+            // Start Timer
+            await this.serialRunner(
+              this.sendTimerTick.bind(this),
+              this.roundTime
+            );
 
-        console.log("GAME UNPAUSED");
+            //End of round
+            // update users with current scores
 
-        // Start Timer
-        await this.serialRunner(this.sendTimerTick.bind(this), this.roundTime);
+            currentPlayer.role = "WORD_GUESSER";
+            this.players[key] = currentPlayer;
+            //Inform concerned player with new role
+            io.to(currentPlayer.id).emit("player_update", {
+              player: currentPlayer
+            });
+          }
+        }
 
-        // update users with current scores
-
-        currentPlayer.role = "WORD_GUESSER";
-        this.players[i] = currentPlayer;
-        //Inform concerned player with new role
-        io.to(currentPlayer.id).emit("player_update", {
-          player: currentPlayer
-        });
+        if (!isKeysProcessed) {
+          break;
+        }
       }
+
       this.currentRound++;
     }
 
