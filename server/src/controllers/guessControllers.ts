@@ -27,8 +27,11 @@ export const rateGuess = (req: Request, res: Response) => {
   //we need to change the rating of the message
 
   targetRoom.messages[messageIndex].rating = rating;
-  let sender = targetRoom.messages[messageIndex].sender;
 
+  let senderId = targetRoom.messages[messageIndex].sender.id;
+
+  let sender = targetRoom.players[senderId];
+  
   // assign points to guesser based on rating
   const score = RatingScoreMap[rating];
 
