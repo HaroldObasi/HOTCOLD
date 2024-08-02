@@ -12,7 +12,10 @@ const ChatBox = () => {
   function handleSendMessage(e: FormEvent) {
     e.preventDefault();
     const data = {
-      sender: player,
+      sender: {
+        id: player.id,
+        userName: player.userName
+      },
       message: guess,
       timeSent: Date.now(),
       rating: null,
