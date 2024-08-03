@@ -21,7 +21,7 @@ const SelectWordModal = () => {
   const [loading, setLoading] = useState(false);
   const {id: roomId} = useSelector((state: RootState) => state.game.room);
   const {id} = useSelector((state: RootState) => state.player);
-  const {modalOpen, targetWordOptions} = useSelector(
+  const {modal, targetWordOptions} = useSelector(
     (state: RootState) => state.ui
   );
 
@@ -42,28 +42,26 @@ const SelectWordModal = () => {
   };
 
   return (
-    <AlertDialog open={modalOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle className="text-center">
-            Your turn to pick a word!
-          </AlertDialogTitle>
-        </AlertDialogHeader>
-        <div className="flex justify-between">
-          {targetWordOptions.map((item, key) => (
-            <Button
-              disabled={loading}
-              className="bg-sky-300 active:bg-sky-500 hover:bg-sky-500 rounded-full"
-              key={key}
-              onClick={() => onSelectOption(key)}
-            >
-              {item}
-            </Button>
-          ))}
-        </div>
-        <AlertDialogFooter></AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle className="text-center">
+          Your turn to pick a word!
+        </AlertDialogTitle>
+      </AlertDialogHeader>
+      <div className="flex justify-between">
+        {targetWordOptions.map((item, key) => (
+          <Button
+            disabled={loading}
+            className="bg-sky-300 active:bg-sky-500 hover:bg-sky-500 rounded-full"
+            key={key}
+            onClick={() => onSelectOption(key)}
+          >
+            {item}
+          </Button>
+        ))}
+      </div>
+      <AlertDialogFooter></AlertDialogFooter>
+    </AlertDialogContent>
   );
 };
 
