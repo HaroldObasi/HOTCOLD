@@ -27,9 +27,9 @@ const ChatBox = () => {
   }
   return (
     <div className="bg-slate-200 flex-1 flex flex-col relative">
-      <div className="px-3 overflow-auto">
-        <p className="text-center my-2 overflow-y-auto">Chat</p>
-        <ul className="font-denk">
+      <div className="px-3 flex h-full flex-col">
+        <p className="text-center my-2">Chat</p>
+        <ul className="font-denk flex-1 overflow-y-auto pb-14">
           {room.messages.map((item: any) => {
             return (
               <li key={item.index}>
