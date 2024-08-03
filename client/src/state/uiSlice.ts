@@ -11,7 +11,7 @@ interface State {
   modal: {
     open: boolean;
     type: ModalTypeEnum;
-    info?: string;
+    info?: any;
   };
   targetWordOptions: string[];
 }
