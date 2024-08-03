@@ -19,19 +19,40 @@ export enum RatingEnum {
   WARMER = "WARMER"
 }
 
-export type Message = {
-  index: number;
-  sender: Player;
-  message: string;
-  timeSent: string;
-  rating: null | RatingEnum;
-  correct: boolean;
-  roomId: string;
-};
+export class Message {
+  public index: number;
+  public sender: {
+    id: string;
+    userName: string;
+  };
+  public message: string;
+  public timeSent: string;
+  public rating: null | RatingEnum;
+  public correct: boolean;
+  public roomId: string;
+  constructor(
+    index: number,
+    sender: {id: string; userName: string},
+    message: string,
+    timeSent: string,
+    rating: null | RatingEnum,
+    correct: boolean,
+    roomId: string
+  ) {
+    this.sender = sender;
+    this.message = message;
+    this.timeSent = timeSent;
+    this.rating = rating;
+    this.correct = correct;
+    this.roomId = roomId;
+  }
+}
 
 export class GameRoom {
   id: string;
-  players: Player[];
+  players: {
+    [playerId: string]: Player;
+  };
   host: Player;
   isPrivateRoom: boolean;
   targetWord: string | null;
@@ -42,11 +63,14 @@ export class GameRoom {
   started: boolean = false;
   paused: boolean = false;
   targetWordOptions: string[];
-  private selected: Set<number> = new Set();
+  roundTime: number = 60;
+  playersNeededToStart: number;
 
   constructor(
     id: string,
-    players: Player[],
+    players: {
+      [playerId: string]: Player;
+    },
     roomMaxCapcity?: number,
     isPrivateRoom: boolean = false
   ) {
@@ -55,12 +79,10 @@ export class GameRoom {
     this.isPrivateRoom = isPrivateRoom;
     this.roomMaxCapacity =
       typeof roomMaxCapcity === "undefined" ? 5 : roomMaxCapcity;
-    if (players.length > 0) {
-      this.host = players[0];
-    }
     this.messages = [];
     this.currentRound = 1;
     this.maxRounds = 3;
+    this.playersNeededToStart = 3;
   }
 
   //send's info of the class that i want to send, as opposed to all
@@ -73,7 +95,8 @@ export class GameRoom {
       currentRound: this.currentRound,
       maxRounds: this.maxRounds,
       started: this.started,
-      targetWordOptions: this.targetWordOptions
+      targetWordOptions: this.targetWordOptions,
+      paused: this.paused
     };
 
     if (withTargetWord) {
@@ -86,20 +109,24 @@ export class GameRoom {
   // should update the clients player list with this.players
   // should send the player calling this thier player object
   addPlayer(player: Player, socket: Socket): boolean {
-    if (this.players.length >= this.roomMaxCapacity) {
+    const playerListSize = Object.keys(this.players).length;
+
+    if (playerListSize >= this.roomMaxCapacity) {
       return false;
     }
-    if (this.players.length === 0) {
+
+    if (playerListSize === 0) {
       player.role = "WORD_PICKER";
       this.host = player;
     }
     player.roomId = this.id;
+
     // avoid adding the same player twice
-    if (this.players.find((p) => p.id === player.id)) {
+    if (this.players[player.id]) {
       return false;
     }
+    this.players[player.id] = player;
 
-    this.players.push(player);
     socket.join(this.id);
 
     // WHY ????
@@ -114,7 +141,10 @@ export class GameRoom {
       roomInfo: this.toJson()
     });
 
-    if (this.players.length > 1) {
+    if (
+      Object.keys(this.players).length >= this.playersNeededToStart &&
+      !this.started
+    ) {
       this.startGame();
     }
 
@@ -123,44 +153,30 @@ export class GameRoom {
 
   //Resets the state of the game room
   resetGameRoom() {
-    this.players = [];
+    this.players = {};
     this.host = null;
     this.messages = [];
     this.targetWord = "";
+    this.currentRound = 1;
     this.started = false;
   }
 
   //removes a player from a room
   //should update the clients player list with this.players
   removePlayer(playerId: string): GameRoom | undefined {
-    let found: boolean = false;
+    const playerListSize = Object.keys(this.players).length;
 
-    this.players = this.players.filter((player) => {
-      if (playerId === player.id) {
-        found = true;
-        return false;
-      }
-      return true;
-    });
+    const foundPlayer = this.players[playerId];
 
-    if (this.players.length < 1) {
-      console.log("The room is empty");
-      this.resetGameRoom();
-    }
-
-    if (found) {
-      return this;
-    } else {
+    if (!foundPlayer) {
       return;
+    } else {
+      delete this.players[playerId];
+      if (playerListSize <= 1) {
+        this.resetGameRoom();
+      }
+      return this;
     }
-  }
-
-  setRoomMaxCapacity(newCapacity: number) {
-    if (newCapacity < 3 || newCapacity > 5) return;
-
-    if (this.players.length > newCapacity) return;
-
-    this.roomMaxCapacity = newCapacity;
   }
 
   verifyGuess(word: string): Boolean {
@@ -178,6 +194,10 @@ export class GameRoom {
 
     if (isCorrect) {
       message.correct = true;
+
+      const index = this.messages.length;
+
+      message.index = index;
       this.messages.push(message);
 
       console.log("THE GUESS IS CORRECT");
@@ -221,9 +241,24 @@ export class GameRoom {
     });
   }
 
+  // method to send leaderboard to clients
+
+  sendLeaderboard() {
+    //sort players by score
+    const sortedPlayers = Object.values(this.players).sort(
+      (a, b) => b.score - a.score
+    );
+
+    io.to(this.id).emit("room_message", {
+      type: "LEADERBOARD",
+      message: "The game has ended",
+      leaderboard: sortedPlayers
+    });
+  }
+
   // method to shuffle target words array, pauses game ?
   // send this.targetWordOptions to clients ?
-  shuffleTargetWordOptions(playerId?: string) {
+  sendTargetWordsToHost(playerId?: string) {
     const getRandomWords = (words: string[], count: number): string[] => {
       const shuffled = words.sort(() => 0.5 - Math.random());
       return shuffled.slice(0, count);
@@ -235,9 +270,17 @@ export class GameRoom {
     if (playerId) {
       io.to(playerId).emit("room_message", {
         type: "PICK_TARGET_WORD",
-        message: "Pick a target word",
+        message: "Pick a target word for the round",
         words: this.targetWordOptions
       });
+
+      //send message to all players except the player picking the word
+      io.in(this.id)
+        .except(playerId)
+        .emit("room_message", {
+          type: "PLAYER_PICKING_WORD",
+          message: `${this.host.userName} is picking a word`
+        });
     }
   }
 
@@ -254,7 +297,12 @@ export class GameRoom {
       targetWord: this.targetWord
     });
 
-    console.log("selected word: ", this.targetWord);
+    //send message to all players letting them know the word that was picked
+    io.to(this.id).emit("room_message", {
+      type: "TARGET_WORD_PICKED",
+      message: `The target word has been picked by ${this.host.userName}`
+    });
+
     this.paused = false;
   }
 
@@ -272,6 +320,8 @@ export class GameRoom {
   }
 
   // starts the game
+  // small bug, players joining after round starts dont have the chance to be the word picker
+
   async startGame() {
     this.started = true;
 
@@ -285,56 +335,75 @@ export class GameRoom {
     while (this.currentRound <= this.maxRounds) {
       //Loop through all the players in the room and give them a chance to be the WORD_PICKER
 
-      for (let i = 0; i < this.players.length; i++) {
-        const currentPlayer = this.players[i];
-        this.host = currentPlayer;
+      let procesedKeys = new Set();
+      while (true) {
+        const currentKeys = Object.keys(this.players);
 
-        currentPlayer.role = "WORD_PICKER";
-        this.players[i] = currentPlayer; // replacing the old instance of the player, with the up
+        console.log("Current Keys: ", currentKeys);
+        const isKeysProcessed = false;
 
-        //Inform all players of new roles after rep
-        //send this.host, this.players to clients
-        io.to(this.id).emit("room_message", {
-          type: "UPDATE_PLAYER_ROLES",
-          message: `New picker is ${currentPlayer.userName}`,
-          playerList: this.players,
-          currentRound: this.currentRound
-        });
+        // iterating through all the players in the room
+        for (let key of currentKeys) {
+          if (!procesedKeys.has(key)) {
+            procesedKeys.add(key);
+            const currentPlayer = this.players[key];
+            this.host = currentPlayer;
 
-        //Give options to host to pick words
-        //select random 6 words
+            currentPlayer.role = "WORD_PICKER";
+            this.players[key] = currentPlayer; // replacing the old instance of the player, with the up
 
-        // Inform concerned player with new role
-        io.to(currentPlayer.id).emit("player_update", {
-          player: currentPlayer
-        });
+            //Inform all players of new roles after rep
+            //send this.host, this.players to clients
+            io.to(this.id).emit("room_message", {
+              type: "UPDATE_PLAYER_ROLES",
+              message: `New picker is ${currentPlayer.userName}`,
+              playerList: this.players,
+              currentRound: this.currentRound
+            });
 
-        // Give player chance to choose a word,
-        // pauses game
-        this.shuffleTargetWordOptions(currentPlayer.id);
+            // Inform concerned player with new role
+            io.to(currentPlayer.id).emit("player_update", {
+              player: currentPlayer
+            });
 
-        console.log("GAME PAUSED, AWAITING USER TARGET WORD SELECTION");
+            // Give player chance to choose a word,
+            // pauses game
+            this.sendTargetWordsToHost(currentPlayer.id);
+            console.log("GAME PAUSED, AWAITING USER TARGET WORD SELECTION");
 
-        await this.waitForGameToResume();
+            await this.waitForGameToResume();
+            console.log("GAME UNPAUSED");
 
-        console.log("GAME UNPAUSED");
+            // Start Timer
+            await this.serialRunner(
+              this.sendTimerTick.bind(this),
+              this.roundTime
+            );
 
-        // Start Timer
-        await this.serialRunner(this.sendTimerTick.bind(this), 30);
+            //End of round
+            // update users with current scores
 
-        // update users with current scores
+            currentPlayer.role = "WORD_GUESSER";
+            this.players[key] = currentPlayer;
+            //Inform concerned player with new role
+            io.to(currentPlayer.id).emit("player_update", {
+              player: currentPlayer
+            });
+          }
+        }
 
-        currentPlayer.role = "WORD_GUESSER";
-        this.players[i] = currentPlayer;
-        //Inform concerned player with new role
-        io.to(currentPlayer.id).emit("player_update", {
-          player: currentPlayer
-        });
+        if (!isKeysProcessed) {
+          break;
+        }
       }
+
       this.currentRound++;
     }
 
     console.log("The game has ended");
+
+    //send all players the game has ended, and a leaderboard
+    this.sendLeaderboard();
 
     // maybe end game with a short timer, and then restart
 

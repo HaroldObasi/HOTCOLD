@@ -12,7 +12,13 @@ import {
   updateMesssages
 } from "../state/GameSlice";
 import {Dispatch} from "react";
-import {setModal, setTargetWordOptions} from "../state/uiSlice";
+import {
+  setModal,
+  setTargetWordOptions,
+  setModalType,
+  setModalInfo,
+  ModalTypeEnum
+} from "../state/uiSlice";
 
 const handleGameStarted = (dispatch: Dispatch<any>, room: any) => {
   toast.success(room.message);
@@ -68,18 +74,40 @@ const handleGuessRated = (dispatch: any, room: any) => {
   dispatch(updatePlayers(room.playerList));
 };
 
+const handlePlayerPickingWord = (dispatch: Dispatch<any>, event: any) => {
+  console.log("player picking word: ", event.message);
+  dispatch(setModal(true));
+  dispatch(setModalType(ModalTypeEnum.INFO));
+  dispatch(setModalInfo(event.message));
+};
+
 const handlePickTargetWord = (dispatch: Dispatch<any>, event: any) => {
   //trigger the modal
   //show the options on the modal for the word picker to select from
   dispatch(setModal(true));
+  dispatch(setModalType(ModalTypeEnum.SELECT_WORD));
+  dispatch(setModalInfo(event.message));
   dispatch(setTargetWordOptions(event.words));
 
   dispatch(resetPickerMessages(undefined));
-  console.log("pick a word: ", event);
 };
 
 const handleUpdateTargetWord = (dispatch: Dispatch<any>, event: any) => {
   dispatch(updateTargetWord(event.targetWord));
+};
+
+const handleLeaderBoard = (dispatch: Dispatch<any>, event: any) => {
+  console.log("leaderboard: ", event);
+  dispatch(setModal(true));
+  dispatch(setModalType(ModalTypeEnum.LEADERBOARD));
+  dispatch(setModalInfo(event.leaderboard));
+};
+
+const handleTargetWordPicked = (dispatch: Dispatch<any>, event: any) => {
+  dispatch(setModal(false));
+  dispatch(setModalType(ModalTypeEnum.NULL));
+  dispatch(setModalInfo(""));
+  console.log("target word picked: ", event);
 };
 
 type Events = {
@@ -96,5 +124,8 @@ export const events: Events = {
   NEW_ROOM_MESSAGE_WINNER: handleCorrectGuess,
   UPDATE_PLAYER_ROLES: handlePlayerRolesUpdate,
   PICK_TARGET_WORD: handlePickTargetWord,
+  PLAYER_PICKING_WORD: handlePlayerPickingWord,
+  TARGET_WORD_PICKED: handleTargetWordPicked,
+  LEADERBOARD: handleLeaderBoard,
   UPDATE_TARGET_WORD: handleUpdateTargetWord
 };

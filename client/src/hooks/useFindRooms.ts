@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 
 type Room = {
   id: string;
-  players: string;
+  players: {[key: string]: string};
   roomMaxCapacity: number;
   host: string;
 };

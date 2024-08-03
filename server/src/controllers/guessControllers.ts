@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {io} from "../index.js";
 import {RoomList} from "../custom-classes/RoomList.js";
 import {RatingEnum} from "custom-classes/GameRoom.js";
+import {Player} from "custom-classes/Player.js";
 
 const RatingScoreMap: {[K in RatingEnum]: number} = {
   COLD: 0,
@@ -26,25 +27,17 @@ export const rateGuess = (req: Request, res: Response) => {
   //we need to change the rating of the message
 
   targetRoom.messages[messageIndex].rating = rating;
-  let sender = targetRoom.messages[messageIndex].sender;
 
+  let senderId = targetRoom.messages[messageIndex].sender.id;
+
+  let sender = targetRoom.players[senderId];
+  
   // assign points to guesser based on rating
   const score = RatingScoreMap[rating];
 
-  let oldScore = targetRoom.messages[messageIndex].sender.score;
-  const newScore = oldScore + score;
+  sender.incrementScore(score);
 
-  sender.score = newScore;
-
-  // Update the player's score in the players array
-  const playerIndex = targetRoom.players.findIndex(
-    (player) => player.id === sender.id
-  );
-  if (playerIndex !== -1) {
-    targetRoom.players[playerIndex].score = newScore;
-  }
-
-
+  console.log("new score ", sender.score);
   //add to players score:
 
   // we need to send the room's updated messages to all the clients in that room
