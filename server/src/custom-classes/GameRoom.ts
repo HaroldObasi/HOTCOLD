@@ -63,7 +63,7 @@ export class GameRoom {
   started: boolean = false;
   paused: boolean = false;
   targetWordOptions: string[];
-  roundTime: number = 10;
+  roundTime: number = 60;
 
   constructor(
     id: string,
@@ -93,7 +93,8 @@ export class GameRoom {
       currentRound: this.currentRound,
       maxRounds: this.maxRounds,
       started: this.started,
-      targetWordOptions: this.targetWordOptions
+      targetWordOptions: this.targetWordOptions,
+      paused: this.paused
     };
 
     if (withTargetWord) {
@@ -234,6 +235,21 @@ export class GameRoom {
     });
   }
 
+  // method to send leaderboard to clients
+
+  sendLeaderboard() {
+    //sort players by score
+    const sortedPlayers = Object.values(this.players).sort(
+      (a, b) => b.score - a.score
+    );
+
+    io.to(this.id).emit("room_message", {
+      type: "LEADERBOARD",
+      message: "The game has ended",
+      leaderboard: sortedPlayers
+    });
+  }
+
   // method to shuffle target words array, pauses game ?
   // send this.targetWordOptions to clients ?
   sendTargetWordsToHost(playerId?: string) {
@@ -248,9 +264,17 @@ export class GameRoom {
     if (playerId) {
       io.to(playerId).emit("room_message", {
         type: "PICK_TARGET_WORD",
-        message: "Pick a target word",
+        message: "Pick a target word for the round",
         words: this.targetWordOptions
       });
+
+      //send message to all players except the player picking the word
+      io.in(this.id)
+        .except(playerId)
+        .emit("room_message", {
+          type: "PLAYER_PICKING_WORD",
+          message: `${this.host.userName} is picking a word`
+        });
     }
   }
 
@@ -267,7 +291,12 @@ export class GameRoom {
       targetWord: this.targetWord
     });
 
-    console.log("selected word: ", this.targetWord);
+    //send message to all players letting them know the word that was picked
+    io.to(this.id).emit("room_message", {
+      type: "TARGET_WORD_PICKED",
+      message: `The target word has been picked by ${this.host.userName}`
+    });
+
     this.paused = false;
   }
 
@@ -366,6 +395,9 @@ export class GameRoom {
     }
 
     console.log("The game has ended");
+
+    //send all players the game has ended, and a leaderboard
+    this.sendLeaderboard();
 
     // maybe end game with a short timer, and then restart
 
