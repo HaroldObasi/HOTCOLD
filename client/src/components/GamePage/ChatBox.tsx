@@ -26,7 +26,7 @@ const ChatBox = () => {
     setGuess("");
   }
   return (
-    <div className="bg-slate-200 flex-1 flex flex-col relative">
+    <div className="bg-slate-200 flex-1 h-full flex flex-col relative">
       <div className="px-3 flex h-full flex-col">
         <p className="text-center my-2">Chat</p>
         <ul className="font-denk flex-1 overflow-y-auto pb-14">
