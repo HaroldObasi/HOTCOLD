@@ -17,18 +17,6 @@ const InfoModal = (props: Props) => {
         <AlertDialogTitle className="text-center">Information</AlertDialogTitle>
       </AlertDialogHeader>
       <div>{info}</div>
-      {/* <div className="flex justify-between">
-        {targetWordOptions.map((item, key) => (
-          <Button
-            disabled={loading}
-            className="bg-sky-300 active:bg-sky-500 hover:bg-sky-500 rounded-full"
-            key={key}
-            onClick={() => onSelectOption(key)}
-          >
-            {item}
-          </Button>
-        ))}
-      </div> */}
       <AlertDialogFooter></AlertDialogFooter>
     </AlertDialogContent>
   );
