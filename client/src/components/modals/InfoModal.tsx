@@ -7,9 +7,7 @@ import {
 import {RootState} from "../../state/PlayerStore";
 import {useSelector} from "react-redux";
 
-type Props = {};
-
-const InfoModal = (props: Props) => {
+const InfoModal = () => {
   const {info} = useSelector((state: RootState) => state.ui.modal);
   return (
     <AlertDialogContent>
