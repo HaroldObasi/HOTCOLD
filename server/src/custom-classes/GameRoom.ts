@@ -64,6 +64,7 @@ export class GameRoom {
   paused: boolean = false;
   targetWordOptions: string[];
   roundTime: number = 60;
+  playersNeededToStart: number;
 
   constructor(
     id: string,
@@ -81,6 +82,7 @@ export class GameRoom {
     this.messages = [];
     this.currentRound = 1;
     this.maxRounds = 3;
+    this.playersNeededToStart = 3;
   }
 
   //send's info of the class that i want to send, as opposed to all
@@ -139,7 +141,10 @@ export class GameRoom {
       roomInfo: this.toJson()
     });
 
-    if (Object.keys(this.players).length > 1 && !this.started) {
+    if (
+      Object.keys(this.players).length >= this.playersNeededToStart &&
+      !this.started
+    ) {
       this.startGame();
     }
 
@@ -152,6 +157,7 @@ export class GameRoom {
     this.host = null;
     this.messages = [];
     this.targetWord = "";
+    this.currentRound = 1;
     this.started = false;
   }
 
