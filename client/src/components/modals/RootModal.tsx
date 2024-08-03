@@ -1,6 +1,7 @@
 import {AlertDialog} from "@radix-ui/react-alert-dialog";
 import SelectWordModal from "./SelectWordModal";
 import InfoModal from "./InfoModal";
+import LeaderBoardModal from "./LeaderBoardModal";
 import {useSelector} from "react-redux";
 import {RootState} from "../../state/PlayerStore";
 import {ModalTypeEnum} from "../../state/uiSlice";
@@ -14,7 +15,7 @@ const RootModal = () => {
     "": <></>,
     INFO: <InfoModal />,
     SELECT_WORD: <SelectWordModal />,
-    LEADERBOARD: <InfoModal />
+    LEADERBOARD: <LeaderBoardModal />
   };
 
   return (

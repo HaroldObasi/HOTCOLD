@@ -11,8 +11,6 @@ const GamePage = () => {
   const room = useSelector((state: RootState) => state.game.room);
   const player = useSelector((state: RootState) => state.player);
 
-  console.log("player", player);
-
   return (
     <div className="font-dela">
       <Background className="h-screen">

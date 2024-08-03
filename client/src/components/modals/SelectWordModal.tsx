@@ -21,9 +21,7 @@ const SelectWordModal = () => {
   const [loading, setLoading] = useState(false);
   const {id: roomId} = useSelector((state: RootState) => state.game.room);
   const {id} = useSelector((state: RootState) => state.player);
-  const {modal, targetWordOptions} = useSelector(
-    (state: RootState) => state.ui
-  );
+  const {targetWordOptions} = useSelector((state: RootState) => state.ui);
 
   const onSelectOption = async (index: number) => {
     try {
