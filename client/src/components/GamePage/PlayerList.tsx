@@ -10,7 +10,7 @@ const PlayerList = () => {
       <ul>
         {Object.keys(players).map((playerId: string) => {
           return (
-            <div className="flex items-center gap-x-2">
+            <div key={playerId} className="flex items-center gap-x-2">
               <li
                 key={playerId}
                 className={`font-light text-center mb-2 bg-sky-100 rounded-md px-2 py-1 text-black ${

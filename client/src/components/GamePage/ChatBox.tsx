@@ -32,7 +32,7 @@ const ChatBox = () => {
         <ul className="font-denk">
           {room.messages.map((item: any) => {
             return (
-              <li>
+              <li key={item.index}>
                 <Message
                   senderName={item.sender.userName}
                   rating={item.rating}
