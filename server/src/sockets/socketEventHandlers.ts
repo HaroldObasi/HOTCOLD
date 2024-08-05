@@ -34,9 +34,9 @@ export const handleCreateRoom = (data: RoomChangeData, socket: Socket) => {
   const room = RoomList.createRoom(
     newPlayer,
     socket,
-    data.roomMaxCapacity,
     data.isPrivateRoom,
-    data.roomId
+    data.roomId,
+    data.roomMaxCapacity
   );
   if (!room) {
     socket.emit(
