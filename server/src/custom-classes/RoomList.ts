@@ -21,15 +21,26 @@ export class RoomList {
     socket: Socket,
     roomMaxCapacity = 5,
     isPrivateRoom = false,
-    roomId = uuidv4()
+    roomId = uuidv4(),
+    maxRounds?: number,
+    roundTime?: number,
+    playersNeededToStart?: number
   ): GameRoom | boolean {
-    const newRoom = new GameRoom(roomId, {}, roomMaxCapacity, isPrivateRoom);
-    newRoom.addPlayer(player, socket);
+    const newRoom = new GameRoom(
+      roomId,
+      {},
+      roomMaxCapacity,
+      isPrivateRoom,
+      maxRounds,
+      playersNeededToStart,
+      roundTime
+    );
 
     if (RoomList.rooms.hasOwnProperty(newRoom.id)) {
       return false;
     }
     RoomList.rooms[newRoom.id] = newRoom;
+    newRoom.addPlayer(player, socket);
     return newRoom;
   }
 
