@@ -19,9 +19,9 @@ export class RoomList {
   static createRoom(
     player: Player,
     socket: Socket,
-    roomMaxCapacity = 5,
-    isPrivateRoom = false,
+    isPrivateRoom?: boolean,
     roomId = uuidv4(),
+    roomMaxCapacity?: number,
     maxRounds?: number,
     roundTime?: number,
     playersNeededToStart?: number
