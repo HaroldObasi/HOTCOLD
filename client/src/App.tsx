@@ -20,8 +20,9 @@ function App() {
 
       if (!func) {
         console.log("Message not handled: ", value);
+      } else{
+        func(dispatch, value);
       }
-      func(dispatch, value);
     }
 
     function onPlayerUpdate(value: any) {
