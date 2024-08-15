@@ -11,7 +11,9 @@ export class RoomList {
     const defaultRooms = {};
     for (let i = 1; i <= length; i++) {
       const roomId = uuidv4();
-      defaultRooms[roomId] = new GameRoom(roomId, {});
+      const room = new GameRoom(roomId, {});
+      room.roomName = `Server Room ${i}`;
+      defaultRooms[roomId] = room;
     }
     return defaultRooms;
   }

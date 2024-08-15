@@ -2,6 +2,7 @@ import {Player} from "./Player.js";
 import {io} from "../index.js";
 import {Socket} from "socket.io";
 import wordBank from "../data/wordBank.json";
+import {v4 as uuidv4} from "uuid";
 
 //TODO create a new method that can randomly pick someone to be be the WORD_PICKER.
 //obviously keeping in mind who has already been a WORD_PICKER for that round
@@ -50,6 +51,7 @@ export class Message {
 
 export class GameRoom {
   id: string;
+  roomName: string;
   players: {
     [playerId: string]: Player;
   };
@@ -67,17 +69,18 @@ export class GameRoom {
   playersNeededToStart: number;
 
   constructor(
-    id: string,
-    players: {
+    id?: string,
+    players?: {
       [playerId: string]: Player;
     },
     roomMaxCapcity?: number,
     isPrivateRoom?: boolean,
     maxRounds?: number,
     playersNeededToStart?: number,
-    roundTime?: number
+    roundTime?: number,
+    roomName?: string
   ) {
-    this.id = id;
+    this.id = id || uuidv4();
     this.players = players || {};
     this.messages = [];
     this.isPrivateRoom = isPrivateRoom || false;
@@ -89,6 +92,7 @@ export class GameRoom {
     this.started = false;
     this.paused = false;
     this.targetWord = null;
+    this.roomName = roomName || "Room Name";
   }
 
   //send's info of the class that i want to send, as opposed to all
