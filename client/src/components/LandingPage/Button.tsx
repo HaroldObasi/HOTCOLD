@@ -1,13 +1,15 @@
 import React from 'react'
 
 type StyledButtonProps = {
-    ClickEvent: () => void;
-    width?: string;
-    height?: string;
-    paddingX?: string;
-    paddingY?: string;
-    children?: React.ReactNode;
-}
+  ClickEvent?: () => void;
+  width?: string;
+  height?: string;
+  paddingX?: string;
+  paddingY?: string;
+  children?: React.ReactNode;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+};
 
 const StyledButton = ({ClickEvent, width, height, paddingX, paddingY, children}: StyledButtonProps) => {
   return (
