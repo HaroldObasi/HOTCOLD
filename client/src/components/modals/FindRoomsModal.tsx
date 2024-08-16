@@ -58,7 +58,7 @@ export default function FindRoomsModal({
               </h2>
             )}
             {!loading &&
-              roomsData.map((room, i) => (
+              roomsData.map((room) => (
                 <Room key={room.id} room={room} roomName={room.roomName} />
               ))}
           </div>
