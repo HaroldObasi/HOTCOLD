@@ -1,12 +1,11 @@
-import {useState} from "react";
 import StyledButton from "../LandingPage/Button";
 import PlayModal from "../LandingPage/PlayModal";
-import {socket} from "../../socket";
 import {useSelector} from "react-redux";
 import {RootState} from "../../state/PlayerStore";
 import useSocketMessage, {ResponseData} from "../../hooks/useSocketMessage";
 import {Formik, Form, Field, ErrorMessage} from "formik";
 import * as Yup from "yup";
+import {socket} from "../../socket";
 
 type JoinRoomModalProps = {
   open: boolean;
@@ -23,7 +22,10 @@ const validationSchema = Yup.object().shape({
     .min(1, "Must be at least 1 round")
     .max(5, "Must be at most 5 rounds"),
   private: Yup.boolean(),
-  roundTime: Yup.number().min(1, "Round time must be at least 1 second")
+  roundTime: Yup.number().min(1, "Round time must be at least 1 second"),
+  playersNeededToStart: Yup.number()
+    .min(0, "Must be at least 1 player")
+    .max(Yup.ref("roomMaxCapacity"), "Cannot exceed max players")
 });
 
 const initialValues = {
@@ -31,7 +33,8 @@ const initialValues = {
   roomMaxCapacity: 5,
   maxRounds: 3,
   private: false,
-  roundTime: 30
+  roundTime: 30,
+  playersNeededToStart: 2
 };
 
 export default function CreateRoomModal({
@@ -39,9 +42,6 @@ export default function CreateRoomModal({
   onClose,
   handleGoBack
 }: JoinRoomModalProps) {
-  const [roomName, setRoomName] = useState("");
-  const [isPrivateRoom, setIsPrivateRoom] = useState(false);
-  const [playersSize, setPlayersSize] = useState(5);
   const playerName = useSelector((state: RootState) => state.player.userName);
   const casesToHandle = {
     room_create: (data: ResponseData) => console.log("room_create", data.status)
@@ -49,17 +49,10 @@ export default function CreateRoomModal({
 
   useSocketMessage("room_message", casesToHandle);
 
-  function handleCreateRoom() {
-    if (roomName.trim().length === 0) {
-      alert("Please enter a room name!");
-      return;
-    }
-    const data = {
-      roomId: roomName,
-      userName: playerName,
-      isPrivateRoom,
-      roomMaxCapacity: playersSize
-    };
+  function handleCreateRoom(data: any) {
+    data["userName"] = playerName;
+    data["roomMaxCapacity"] = parseInt(data["roomMaxCapacity"], 10);
+    data["playersNeededToStart"] = parseInt(data["playersNeededToStart"], 10);
 
     console.log("data", data);
     socket.emit("create_room", data);
@@ -76,10 +69,10 @@ export default function CreateRoomModal({
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            console.log("values", values);
+            handleCreateRoom(values);
           }}
         >
-          {({isSubmitting}) => (
+          {({isSubmitting, values}) => (
             <Form className="w-full sm:w-3/4 mx-auto font-denk ">
               <div className="justify-between flex items-center">
                 <button
@@ -117,7 +110,12 @@ export default function CreateRoomModal({
                 <label htmlFor="roomMaxCapacity" className="capitalize text-xl">
                   max players
                 </label>
-                <Field as="select" name="roomMaxCapacity" className="ml-2">
+                <Field
+                  type="number"
+                  as="select"
+                  name="roomMaxCapacity"
+                  className="ml-2"
+                >
                   {[5, 6, 7, 8, 9, 10].map((num) => (
                     <option value={num} key={num}>
                       {num}
@@ -126,6 +124,34 @@ export default function CreateRoomModal({
                 </Field>
                 <ErrorMessage
                   name="roomMaxCapacity"
+                  component="div"
+                  className="text-red-500 text-xs"
+                />
+              </div>
+
+              <div className="mt-4">
+                <label
+                  htmlFor="playersNeededToStart"
+                  className="capitalize text-xl"
+                >
+                  Players needed to start game
+                </label>
+                <Field
+                  type="number"
+                  as="select"
+                  name="playersNeededToStart"
+                  className="ml-2"
+                >
+                  {Array.from(
+                    Array(parseInt(String(values.roomMaxCapacity), 10)).keys()
+                  ).map((num) => (
+                    <option value={num + 1} key={num}>
+                      {num + 1}
+                    </option>
+                  ))}
+                </Field>
+                <ErrorMessage
+                  name="playersNeededToStart"
                   component="div"
                   className="text-red-500 text-xs"
                 />
