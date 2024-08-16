@@ -6,6 +6,7 @@ type Room = {
   players: {[key: string]: string};
   roomMaxCapacity: number;
   host: string;
+  roomName: string;
 };
 export default function useFindRooms(visible: boolean) {
   const [roomsData, setRoomsData] = useState<Room[]>([]);

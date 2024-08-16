@@ -11,7 +11,9 @@ export class RoomList {
     const defaultRooms = {};
     for (let i = 1; i <= length; i++) {
       const roomId = uuidv4();
-      defaultRooms[roomId] = new GameRoom(roomId, {});
+      const room = new GameRoom(roomId, {});
+      room.roomName = `Server Room ${i}`;
+      defaultRooms[roomId] = room;
     }
     return defaultRooms;
   }
@@ -19,17 +21,30 @@ export class RoomList {
   static createRoom(
     player: Player,
     socket: Socket,
-    roomMaxCapacity = 5,
-    isPrivateRoom = false,
-    roomId = uuidv4()
+    roomName: string,
+    isPrivateRoom?: boolean,
+    roomMaxCapacity?: number,
+    maxRounds?: number,
+    roundTime?: number,
+    playersNeededToStart?: number
   ): GameRoom | boolean {
-    const newRoom = new GameRoom(roomId, {}, roomMaxCapacity, isPrivateRoom);
-    newRoom.addPlayer(player, socket);
+    const newRoom = new GameRoom(
+      uuidv4(),
+      {},
+      roomMaxCapacity,
+      isPrivateRoom,
+      maxRounds,
+      playersNeededToStart,
+      roundTime,
+      roomName
+    );
 
+    // Room with same id already exists
     if (RoomList.rooms.hasOwnProperty(newRoom.id)) {
       return false;
     }
     RoomList.rooms[newRoom.id] = newRoom;
+    newRoom.addPlayer(player, socket);
     return newRoom;
   }
 

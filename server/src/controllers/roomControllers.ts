@@ -11,12 +11,18 @@ export const getAllRooms = (req: Request, res: Response) => {
   const rooms: Rooms[] = Object.entries(RoomList.rooms)
     .map(([id, room]) => ({
       id,
+      // roomName,
+      roomName: room.roomName,
       players: room.players,
       roomMaxCapacity: room.roomMaxCapacity,
       host: room.host,
       isPrivateRoom: room.isPrivateRoom
     }))
-    .filter((room) => !room.isPrivateRoom && !(room.players.length === room.roomMaxCapacity))
+    .filter(
+      (room) =>
+        !room.isPrivateRoom &&
+        !(Object.keys(room.players).length >= room.roomMaxCapacity)
+    )
     .slice(0, 10);//only ten rooms we can paginate later
 
   res.json({rooms});

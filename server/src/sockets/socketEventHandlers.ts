@@ -29,14 +29,19 @@ export const handleRoomJoinWithID = (data: RoomChangeData, socket: Socket) => {
   );
 };
 
-export const handleCreateRoom = (data: RoomChangeData, socket: Socket) => {
+export const handleCreateRoom = (data: any, socket: Socket) => {
   const newPlayer = new Player(socket.id, data.userName);
+
+  console.log("data recieved", data);
   const room = RoomList.createRoom(
     newPlayer,
     socket,
+    data.roomName,
+    (data.isPrivateRoom = data.private),
     data.roomMaxCapacity,
-    data.isPrivateRoom,
-    data.roomId
+    data.maxRounds,
+    data.roundTime,
+    data.playersNeededToStart
   );
   if (!room) {
     socket.emit(

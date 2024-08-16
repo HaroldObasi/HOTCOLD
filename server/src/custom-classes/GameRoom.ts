@@ -2,6 +2,7 @@ import {Player} from "./Player.js";
 import {io} from "../index.js";
 import {Socket} from "socket.io";
 import wordBank from "../data/wordBank.json";
+import {v4 as uuidv4} from "uuid";
 
 //TODO create a new method that can randomly pick someone to be be the WORD_PICKER.
 //obviously keeping in mind who has already been a WORD_PICKER for that round
@@ -50,6 +51,7 @@ export class Message {
 
 export class GameRoom {
   id: string;
+  roomName: string;
   players: {
     [playerId: string]: Player;
   };
@@ -60,29 +62,37 @@ export class GameRoom {
   messages: Message[];
   currentRound: number;
   maxRounds: number;
-  started: boolean = false;
-  paused: boolean = false;
+  started: boolean;
+  paused: boolean;
   targetWordOptions: string[];
-  roundTime: number = 60;
+  roundTime: number;
   playersNeededToStart: number;
 
   constructor(
-    id: string,
-    players: {
+    id?: string,
+    players?: {
       [playerId: string]: Player;
     },
     roomMaxCapcity?: number,
-    isPrivateRoom: boolean = false
+    isPrivateRoom?: boolean,
+    maxRounds?: number,
+    playersNeededToStart?: number,
+    roundTime?: number,
+    roomName?: string
   ) {
-    this.id = id;
-    this.players = players;
-    this.isPrivateRoom = isPrivateRoom;
-    this.roomMaxCapacity =
-      typeof roomMaxCapcity === "undefined" ? 5 : roomMaxCapcity;
+    this.id = id || uuidv4();
+    this.players = players || {};
     this.messages = [];
+    this.isPrivateRoom = isPrivateRoom || false;
+    this.roomMaxCapacity = roomMaxCapcity || 5;
     this.currentRound = 1;
-    this.maxRounds = 3;
-    this.playersNeededToStart = 3;
+    this.maxRounds = maxRounds || 3;
+    this.playersNeededToStart = playersNeededToStart || 2;
+    this.roundTime = roundTime || 60;
+    this.started = false;
+    this.paused = false;
+    this.targetWord = null;
+    this.roomName = roomName || "Room Name";
   }
 
   //send's info of the class that i want to send, as opposed to all
@@ -159,6 +169,7 @@ export class GameRoom {
     this.targetWord = "";
     this.currentRound = 1;
     this.started = false;
+    this.paused = false;
   }
 
   //removes a player from a room
