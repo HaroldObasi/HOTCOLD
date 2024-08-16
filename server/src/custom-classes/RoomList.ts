@@ -21,23 +21,25 @@ export class RoomList {
   static createRoom(
     player: Player,
     socket: Socket,
+    roomName: string,
     isPrivateRoom?: boolean,
-    roomId = uuidv4(),
     roomMaxCapacity?: number,
     maxRounds?: number,
     roundTime?: number,
     playersNeededToStart?: number
   ): GameRoom | boolean {
     const newRoom = new GameRoom(
-      roomId,
+      uuidv4(),
       {},
       roomMaxCapacity,
       isPrivateRoom,
       maxRounds,
       playersNeededToStart,
-      roundTime
+      roundTime,
+      roomName
     );
 
+    // Room with same id already exists
     if (RoomList.rooms.hasOwnProperty(newRoom.id)) {
       return false;
     }
