@@ -1,4 +1,4 @@
-import {FormEvent, useState} from "react";
+import {FormEvent, useState, useRef} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "../../state/PlayerStore";
 import Message from "./Message";
@@ -8,6 +8,8 @@ const ChatBox = () => {
   const room = useSelector((state: RootState) => state.game.room);
   const player = useSelector((state: RootState) => state.player);
   const [guess, setGuess] = useState<string>("");
+
+  const chatRef = useRef<HTMLUListElement>(null);
 
   function handleSendMessage(e: FormEvent) {
     e.preventDefault();
@@ -23,13 +25,19 @@ const ChatBox = () => {
       roomId: player.roomId
     };
     socket.emit("send_message", data);
+
+    const chat = chatRef.current;
+
+    console.log(chat?.scrollHeight);
+
+    chat?.scrollTo(0, chat.scrollHeight + 100);
     setGuess("");
   }
   return (
     <div className="bg-slate-200 flex-1 h-full flex flex-col relative">
       <div className="px-3 flex h-full flex-col">
         <p className="text-center my-2">Chat</p>
-        <ul className="font-denk flex-1 overflow-y-auto pb-14">
+        <ul ref={chatRef} className="font-denk flex-1 overflow-y-auto pb-20">
           {room.messages.map((item: any) => {
             return (
               <li key={item.index}>
