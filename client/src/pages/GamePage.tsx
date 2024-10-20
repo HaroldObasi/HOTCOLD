@@ -34,6 +34,7 @@ const GamePage = () => {
 
             <p>Timer: {room.timer || (room.timer >= 0 && <>{room.timer}</>)}</p>
           </div>
+          <div className="py-1">Room Id : {room.id}</div>
           <div className="flex gap-x-2  h-[500px] ">
             <PlayerList />
 
