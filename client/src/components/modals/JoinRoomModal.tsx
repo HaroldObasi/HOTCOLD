@@ -1,4 +1,6 @@
 import {useState} from "react";
+import {RootState} from "../../state/PlayerStore";
+import {useSelector} from "react-redux";
 import StyledButton from "../LandingPage/Button";
 import PlayModal from "../LandingPage/PlayModal";
 import {socket} from "../../socket";
@@ -16,6 +18,7 @@ export default function JoinRoomModal({
   handleGoBack
 }: JoinRoomModalProps) {
   const [roomCode, setRoomCode] = useState("");
+  const playerName = useSelector((state: RootState) => state.player.userName);
   const casesToHandle = {
     join_room_with_id: (data: ResponseData) =>
       console.log("join_room_with_id", data.status)
@@ -25,12 +28,12 @@ export default function JoinRoomModal({
 
   function handleRoomJoin() {
     if (roomCode.trim().length === 0) {
-      alert("Please enter a room name!");
+      alert("Please enter a room code!");
       return;
     }
     const data = {
-      roomId: roomCode,
-      userName: "playerName"
+      roomId: roomCode.trim(),
+      userName: playerName
     };
     socket.emit("join_room_with_id", data);
   }
