@@ -201,33 +201,15 @@ export class GameRoom {
   // add a message item to this.messages list
   // update clients message list with this.messages
   sendMessage(message: Message) {
-    const isCorrect = this.verifyGuess(message.message);
+    message.index = this.messages.length;
+    this.messages.push(message);
 
-    if (isCorrect) {
-      message.correct = true;
-
-      const index = this.messages.length;
-
-      message.index = index;
-      this.messages.push(message);
-
-      console.log("THE GUESS IS CORRECT");
-      io.to(this.id).emit("room_message", {
-        type: "NEW_ROOM_MESSAGE_WINNER",
-        message: `${message.sender.userName} guessed the word correctly`,
-        roomInfo: this.toJson()
-      });
-    } else {
-      message.index = this.messages.length;
-      this.messages.push(message);
-
-      io.to(this.id).emit("room_message", {
-        type: "NEW_ROOM_MESSAGE",
-        message: `${message.sender.userName} sent a message: ${message.message}`,
-        messageData: message
-        // roomInfo: this,
-      });
-    }
+    io.to(this.id).emit("room_message", {
+      type: "NEW_ROOM_MESSAGE",
+      message: `${message.sender.userName} sent a message: ${message.message}`,
+      messageData: message
+      // roomInfo: this,
+    });
   }
 
   // This function takes a cb, which will be run every 1s for length number of seconds
