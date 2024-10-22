@@ -6,15 +6,36 @@ const PickerBox = () => {
   const room = useSelector((state: RootState) => state.game.room);
   return (
     <ul className="font-denk">
-      {room.pickerMessages.map((item: any) => {
+      {room.pickerMessages.map((item: any, index: number) => {
         return (
-          <li key={item.index} className="w-full px-5 py-3">
+          <li
+            key={item.index}
+            className={`w-full px-5 py-3 ${
+              item.rating !== null ? "hidden" : ""
+            }`}
+          >
             <div className="w-full flex items-center justify-between">
-              <Button messageIndex={item.index} rating="COLDER" />
-              <Button messageIndex={item.index} rating="COLD" />
+              <Button
+                pickerListIndex={index}
+                messageIndex={item.index}
+                rating="COLDER"
+              />
+              <Button
+                pickerListIndex={index}
+                messageIndex={item.index}
+                rating="COLD"
+              />
               {item.message}
-              <Button messageIndex={item.index} rating="HOT" />
-              <Button messageIndex={item.index} rating="WARMER" />
+              <Button
+                pickerListIndex={index}
+                messageIndex={item.index}
+                rating="HOT"
+              />
+              <Button
+                pickerListIndex={index}
+                messageIndex={item.index}
+                rating="WARMER"
+              />
             </div>
           </li>
         );

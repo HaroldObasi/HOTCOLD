@@ -34,6 +34,10 @@ export const gameSlice = createSlice({
       ];
     },
 
+    updatePickerMessage: (state, action: PayloadAction<any>) => {
+      state.room.pickerMessages[action.payload.index] = action.payload.message;
+    },
+
     updatePlayers: (state, action: PayloadAction<any>) => {
       state.room.players = action.payload;
     },
@@ -78,7 +82,8 @@ export const {
   resetPickerMessages,
   updateTargetWord,
   updatePlayers,
-  updateMesssages
+  updateMesssages,
+  updatePickerMessage
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
