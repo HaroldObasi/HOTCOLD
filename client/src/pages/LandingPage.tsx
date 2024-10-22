@@ -10,6 +10,7 @@ import FindRoomsModal from "../components/modals/FindRoomsModal";
 import JoinRoomModal from "../components/modals/JoinRoomModal";
 import CreateRoomModal from "../components/modals/CreateRoomModal";
 
+
 const LandingPage = () => {
   const [selectedModal, setSelectedModal] = useState<
     "play" | "find" | "join" | "create" | null
@@ -53,6 +54,27 @@ const LandingPage = () => {
   return (
     <Background>
       <main className="justify-center font-dela">
+        <div className="absolute right-1 top-2">
+          <iframe
+            src="https://ghbtns.com/github-btn.html?user=HaroldObasi&repo=HOTCOLD&type=star&count=true&size=large"
+            scrolling="0"
+            width="130"
+            height="30"
+            title="GitHub"
+          ></iframe>
+        </div>
+        {/* <Button
+          className="absolute right-2 top-2 bg-sky-300 text-black font-denk"
+          asChild
+        >
+          <a
+            href="https://github.com/your-org/your-repo"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Github className="mr-2 h-4 w-4" /> Start Repo
+          </a>
+        </Button> */}
         <div className="min-h-screen">
           <h1
             className="text-center pt-24 p-3 mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-50 
