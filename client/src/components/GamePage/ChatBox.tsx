@@ -42,6 +42,7 @@ const ChatBox = () => {
             return (
               <li key={item.index}>
                 <Message
+                  senderId={item.sender.id}
                   senderName={item.sender.userName}
                   rating={item.rating}
                   message={item.message}
