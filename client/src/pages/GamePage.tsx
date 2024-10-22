@@ -42,8 +42,6 @@ const GamePage = () => {
               <div className="flex flex-1 gap-2 flex-col lg:flex-row">
                 {player.role === "WORD_PICKER" && <GuessBox />}
                 {player.role === "WORD_GUESSER" && <ChatBox />}
-                {/* <GuessBox />
-                <ChatBox /> */}
               </div>
             ) : (
               <div className="flex-1 bg-slate-200 flex justify-center items-center">

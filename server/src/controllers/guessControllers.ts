@@ -31,13 +31,12 @@ export const rateGuess = (req: Request, res: Response) => {
   let senderId = targetRoom.messages[messageIndex].sender.id;
 
   let sender = targetRoom.players[senderId];
-  
+
   // assign points to guesser based on rating
   const score = RatingScoreMap[rating];
 
   sender.incrementScore(score);
 
-  console.log("new score ", sender.score);
   //add to players score:
 
   // we need to send the room's updated messages to all the clients in that room
@@ -51,7 +50,9 @@ export const rateGuess = (req: Request, res: Response) => {
   });
 
   return res.status(200).json({
-    message: "Rating changed successfully!"
+    message: targetRoom.messages[messageIndex],
+    guessId: messageIndex,
+    rating: rating
   });
 };
 
